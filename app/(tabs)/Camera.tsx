@@ -52,9 +52,8 @@ export default function App() {
             //setStartCamera(false)
             setCapturedImage(source)
    
-            console.log("Lokasi gambar", capturedImage)
-            //router.push({ pathname: '/Preview/', params: {'image':source} });
-            
+            console.log("Lokasi gambar", source)
+            router.push({ pathname: '/Preview/', params: {'image':source} });
          }
     }
     

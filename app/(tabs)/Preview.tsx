@@ -4,7 +4,7 @@ import { View, Image } from 'react-native';
 
 const Preview = () => {
     const params = useLocalSearchParams<{image?: string}>();
-    console.log(params.image);
+    console.log("Gambar yang diterima", params.image);
     return (
         <View>
             <Image
