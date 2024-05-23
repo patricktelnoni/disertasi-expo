@@ -3,7 +3,7 @@ import { useState, useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-
+import {Preview} from '../screen/Preview';
 
 export default function App() {
     const [facing, setFacing] = useState('back');
@@ -53,7 +53,7 @@ export default function App() {
             setCapturedImage(source)
    
             console.log("Lokasi gambar", source)
-            router.push({ pathname: '/Preview/', params: {'image':source} });
+            router.push({ pathname: '/screen/Preview/', params: {'gambar':source} });
          }
     }
     
