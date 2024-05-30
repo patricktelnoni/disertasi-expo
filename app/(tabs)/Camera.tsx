@@ -1,10 +1,11 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import {Preview} from '../screen/Preview';
 import * as MediaLibrary from'expo-media-library';
+import * as Location from 'expo-location';
 //import {  } from 'react-native-gesture-handler';
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
     const [permission, requestPermission] = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     const [albums, setAlbums] = useState(null);
+    const [location, setLocation] = Location.useForegroundPermissions();
     const [previewVisible, setPreviewVisible] = useState(false)
     const [capturedImage, setCapturedImage] = useState<any>(null)
     const [isCameraReady, setIsCameraReady] = useState(false);
@@ -22,6 +24,26 @@ export default function App() {
     const cameraRef = useRef(null);
     const router = useRouter();
 
+
+    useEffect(() => {
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if(status !== 'granted'){
+          console.log('Permission to access location was denied');
+          return;
+        }
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      })(); 
+    });
+        
+    //let { status } = Location.requestForegroundPermissionsAsync();
+    
+  
+    //location =  Location.getCurrentPositionAsync({});
+    //setLocation(location);
+      
+ 
     if (!permission) {
         // Camera permissions are still loading.
         return <View />;
@@ -44,8 +66,10 @@ export default function App() {
     const kirimData = () => {
       var data = new FormData();
 
+      let titik = location.coords.latitude + "," + location.coords.longitude;
       data.append('keterangan', 'aman');
       data.append('cuaca_lokasi_amp', 'cerah');
+      data.append('lokasi_cuaca_amp',titik);
       
       data.append('foto_cuaca_amp', {
         uri: capturedImage,
