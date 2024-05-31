@@ -13,7 +13,7 @@ export default function App() {
     const [permission, requestPermission] = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     const [albums, setAlbums] = useState(null);
-    const [location, setLocation] = Location.useForegroundPermissions();
+    const [location, setLocation] = useState(null);
     const [previewVisible, setPreviewVisible] = useState(false)
     const [capturedImage, setCapturedImage] = useState<any>(null)
     const [isCameraReady, setIsCameraReady] = useState(false);
@@ -32,7 +32,7 @@ export default function App() {
           console.log('Permission to access location was denied');
           return;
         }
-        let location = await Location.getCurrentPositionAsync({});
+        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
         setLocation(location);
       })(); 
     });
@@ -90,7 +90,7 @@ export default function App() {
           'Content-Type': 'multipart/form-data',
         }
       }).then((response) => {
-        console.log('Response:',response.status);
+        console.log('Response:',response);
       }).
       catch((error) => {
         console.error('Error:', error);
