@@ -6,6 +6,8 @@ import { useRouter } from 'expo-router';
 import {Preview} from '../screen/Preview';
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
+import axios from 'axios';
+import * as FileSystem from 'expo-file-system';
 //import {  } from 'react-native-gesture-handler';
 
 export default function App() {
@@ -22,8 +24,6 @@ export default function App() {
     const [kondisiLahanPenghamparan, setKondisiLahanPenghamparan] = useState('');
 
     const cameraRef = useRef(null);
-    const router = useRouter();
-
 
     useEffect(() => {
       (async () => {
@@ -63,33 +63,48 @@ export default function App() {
         );
     }
 
-    const kirimData = () => {
-      var data = new FormData();
+    const kirimData = async () => {
+      const data = new FormData();
+      const resp = await fetch(capturedImage);
+      const blob = await resp.blob(); 
+      const arrayBuffer = await new Response(blob).arrayBuffer();
 
-      let titik = location.coords.latitude + "," + location.coords.longitude;
-      data.append('keterangan', 'aman');
+      //let titik = location.coords.latitude + "," + location.coords.longitude;
+      const fileName = capturedImage.split('/').pop();
+      const pathReal = capturedImage.replace('///', '//');
+      //const fileType = fileName.split('.').pop();
+      data.append('keterangan', 'aman saja kaka dari hp');
       data.append('cuaca_lokasi_amp', 'cerah');
-      data.append('lokasi_cuaca_amp',titik);
+      data.append('lokasi_cuaca_amp','Soe');
       
       data.append('foto_cuaca_amp', {
         uri: capturedImage,
-        name: 'photo.jpg',
-        type: 'image/jpg'
-      });
-      data.append('lokasi_cuaca_amp', 'Soe');
+        name: fileName,
+        type: 'image/*'
+      } as any);
+
+  
       data.append('cuaca_lahan_penghamparan', 'Aman');
       data.append('kondisi_lahan_penghamparan', 'Aman');
-      data.append('foto_lahan_penghamparan', capturedImage);
+      data.append('foto_lahan_penghamparan', pathReal);
       data.append('lokasi_lahan_penghamparan', 'Soe');
-      data.append('foto_kondisi_lahan_penghamparan', capturedImage);
-      console.log(data);
-      fetch('http://192.168.0.9:8000/api/kesiapan_lahan/', {
-        method: 'POST',
-        body: data,
-        headers:{
-          'Content-Type': 'multipart/form-data',
+      data.append('foto_kondisi_lahan_penghamparan', pathReal);
+      
+      
+      console.log('Path:', capturedImage);
+      console.log('data:', data);
+      fetch(
+        'http://192.168.0.9:8000/api/kesiapan_lahan/', {
+          method: 'POST',
+          body: data,
+          headers:{
+            'Content-Type': 'multipart/form-data',
+          }
         }
-      }).then((response) => {
+        
+        
+            
+      ).then((response) => {
         console.log('Response:',response);
       }).
       catch((error) => {
@@ -101,23 +116,21 @@ export default function App() {
   }
 
   const __takePicture = async () => {
-    //console.log("take picture");
-    //console.log(cameraRef.current);
     
     if (cameraRef) {
         const options = { base64: true};
-        const data = await cameraRef.current.takePictureAsync(options);
+        let data = await cameraRef.current.takePictureAsync(options);
         const source = data.uri;
         if (source) {
             //console.log("picture", source);
             setPreviewVisible(true)
             //setStartCamera(false)
-            setCapturedImage(source)
-
+            //setCapturedImage(source)
+            
             if(savePermission?.status !== 'granted'){
               await MediaLibrary.requestPermissionsAsync();
             }
-            const cachedAsset = await MediaLibrary.createAssetAsync(source);
+            /*const cachedAsset = await MediaLibrary.createAssetAsync(source);
 
             const album = await MediaLibrary.getAlbumAsync('cuaca');
             if(album == null){
@@ -125,17 +138,16 @@ export default function App() {
               MediaLibrary.createAlbumAsync('cuaca', asset)
                         .then(() => {console.log("Album berhasil dibuat")})
                         .catch((error) => {console.log("Album gagal dibuat", error)});
-            }
+            }*/
           
-            await MediaLibrary.addAssetsToAlbumAsync([cachedAsset], album, false)
-                              .then(
-                                (pathname) => {
-                                  console.log("Gambar berhasil disimpan di album cuaca", pathname)
-                                })
-                              .catch(
-                                (error) => {
-                                  console.log("Gagal menyimpan gambar", error)}
-                                );
+            let asset = await MediaLibrary.createAssetAsync(source);
+            
+            //const base64 = await FileSystem.readAsStringAsync(source, {encoding: 'base63'});
+            //console.log('base64:', base64);
+
+            setCapturedImage(source); 
+           
+                                
             
             //setCapturedImage(image.assets[0].uri);
             
@@ -171,7 +183,13 @@ export default function App() {
           <View>
             <Text>Preview</Text>
             { previewVisible ?(
-            <Button title="Take photo back" onPress={__retakePicture} />) 
+              
+              <View><Image
+              source={{uri: capturedImage}}
+              style={{ width: 500, height: 500 }}
+          />
+            <Button title="Take photo back" onPress={__retakePicture} />
+            </View>) 
             : (<Button title='take photo' onPress={console.log('press')}/>)}
           </View>
           ) : (
