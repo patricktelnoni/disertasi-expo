@@ -2,8 +2,6 @@ import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import {Preview} from '../screen/Preview';
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
 import axios from 'axios';
@@ -14,7 +12,6 @@ export default function App() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
-    const [albums, setAlbums] = useState(null);
     const [location, setLocation] = useState(null);
     const [previewVisible, setPreviewVisible] = useState(false)
     const [capturedImage, setCapturedImage] = useState<any>(null)
@@ -23,7 +20,7 @@ export default function App() {
     const [cuacaLahanPenghamparan, setCuacaLahanPenghamparan] = useState('');
     const [kondisiLahanPenghamparan, setKondisiLahanPenghamparan] = useState('');
 
-    const cameraRef = useRef(null);
+    const cameraRef = Camera;
 
     useEffect(() => {
       (async () => {
@@ -32,26 +29,16 @@ export default function App() {
           console.log('Permission to access location was denied');
           return;
         }
-        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.Highest, maximumAge: 10000});
+        let location = await Location.getCurrentPositionAsync();
         setLocation(location);
       })(); 
     });
-        
-    //let { status } = Location.requestForegroundPermissionsAsync();
-    
-  
-    //location =  Location.getCurrentPositionAsync({});
-    //setLocation(location);
       
  
     if (!permission) {
         // Camera permissions are still loading.
         return <View />;
     }
-
-    const onCameraReady = () => {
-        setIsCameraReady(true);
-    };
 
     if (!permission.granted) {
         // Camera permissions are not granted yet.
@@ -65,17 +52,13 @@ export default function App() {
 
     const kirimData = async () => {
       const data = new FormData();
-      const resp = await fetch(capturedImage);
-      const blob = await resp.blob(); 
-      const arrayBuffer = await new Response(blob).arrayBuffer();
 
-      //let titik = location.coords.latitude + "," + location.coords.longitude;
+      let titik = location.coords.latitude + "," + location.coords.longitude;
       const fileName = capturedImage.split('/').pop();
-      const pathReal = capturedImage.replace('///', '//');
       //const fileType = fileName.split('.').pop();
       data.append('keterangan', 'aman saja kaka dari hp');
       data.append('cuaca_lokasi_amp', 'cerah');
-      data.append('lokasi_cuaca_amp','Soe');
+      data.append('lokasi_cuaca_amp',titik);
       
       data.append('foto_cuaca_amp', {
         uri: capturedImage,
@@ -86,25 +69,21 @@ export default function App() {
   
       data.append('cuaca_lahan_penghamparan', 'Aman');
       data.append('kondisi_lahan_penghamparan', 'Aman');
-      data.append('foto_lahan_penghamparan', pathReal);
-      data.append('lokasi_lahan_penghamparan', 'Soe');
-      data.append('foto_kondisi_lahan_penghamparan', pathReal);
+      data.append('foto_lahan_penghamparan', capturedImage);
+      data.append('lokasi_lahan_penghamparan', titik);
+      data.append('foto_kondisi_lahan_penghamparan', capturedImage);
       
       
       console.log('Path:', capturedImage);
       console.log('data:', data);
       fetch(
         'http://192.168.0.9:8000/api/kesiapan_lahan/', {
-          method: 'POST',
-          body: data,
-          headers:{
-            'Content-Type': 'multipart/form-data',
-          }
+        method: 'POST',
+        body: data,
+        headers:{
+          'Content-Type': 'multipart/form-data',
         }
-        
-        
-            
-      ).then((response) => {
+      }).then((response) => {
         console.log('Response:',response);
       }).
       catch((error) => {
@@ -118,40 +97,24 @@ export default function App() {
   const __takePicture = async () => {
     
     if (cameraRef) {
-        const options = { base64: true};
-        let data = await cameraRef.current.takePictureAsync(options);
-        const source = data.uri;
-        if (source) {
-            //console.log("picture", source);
-            setPreviewVisible(true)
-            //setStartCamera(false)
-            //setCapturedImage(source)
+        const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
+        await cameraRef.current.takePictureAsync(options)
+        .then((data) => {
+          setCapturedImage(data.uri);
+          setPreviewVisible(true);
+        });
+        //const source = data.uri;
+        if (previewVisible) {
+
+
             
             if(savePermission?.status !== 'granted'){
               await MediaLibrary.requestPermissionsAsync();
             }
-            /*const cachedAsset = await MediaLibrary.createAssetAsync(source);
 
-            const album = await MediaLibrary.getAlbumAsync('cuaca');
-            if(album == null){
-              const asset = await MediaLibrary.createAssetAsync(source);
-              MediaLibrary.createAlbumAsync('cuaca', asset)
-                        .then(() => {console.log("Album berhasil dibuat")})
-                        .catch((error) => {console.log("Album gagal dibuat", error)});
-            }*/
-          
-            let asset = await MediaLibrary.createAssetAsync(source);
-            
-            //const base64 = await FileSystem.readAsStringAsync(source, {encoding: 'base63'});
-            //console.log('base64:', base64);
-
-            setCapturedImage(source); 
-           
-                                
-            
-            //setCapturedImage(image.assets[0].uri);
-            
-            //router.push({ pathname: '/screen/Preview/', params: {'gambar':source} });
+            await MediaLibrary.createAssetAsync(capturedImage)
+                .then((asset) => {setCapturedImage(asset.uri)})
+                .catch((error) => {console.log('error', error)});
          }
     }
     
@@ -196,7 +159,6 @@ export default function App() {
         <CameraView 
               style={styles.camera} 
               facing={facing}
-              onCameraReady={onCameraReady}
               photo={true}
               ref={cameraRef}>
           <View style={styles.buttonContainer}>
