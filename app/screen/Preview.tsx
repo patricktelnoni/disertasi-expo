@@ -1,15 +1,16 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
 import React from 'react';
 import { View, Image } from 'react-native';
 
 const Preview = () => {
-    const params = useLocalSearchParams<{gambar?: string}>();
+    const params = useGlobalSearchParams<{gambar: string}>();
     console.log("Gambar yang diterima", params);
     return (
         <View>
             <Image
-                source={{uri: '${params.gambar}'}}
-                style={{ width: 500, height: 500 }}
+                source={{uri: params.gambar}}
+                style={{width: 200, height: 200}}
+              
             />
         </View>
     );

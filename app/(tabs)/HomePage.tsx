@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {Text, StyleSheet, View, Button, TextInput, Alert} from 'react-native';
+import Preview from '../screen/Preview';
+import { router } from 'expo-router';
 //import CustomText from '../../component/CustomText.tsx';
 
 const styles = StyleSheet.create({
@@ -30,6 +32,9 @@ const HomePage = ({navigation}) => {
   const sideNav = () => {
     navigation.navigate('SideNavigation');
   };
+  const preview = () => {
+    router.push({pathname:'/screen/Preview'});
+  };
 
   return (
     <View
@@ -55,6 +60,7 @@ const HomePage = ({navigation}) => {
         <Button title="Tarik data" onPress={tarikData} />
         <Button title="Form Proyek" onPress={formProyek} />
         <Button title="Side Nav" onPress={sideNav} />
+        <Button title="Preview" onPress={preview} />
       </View>
     </View>
   );

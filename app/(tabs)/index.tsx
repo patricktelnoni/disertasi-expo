@@ -46,7 +46,12 @@ export default function HomeScreen() {
           style={styles.textInput}
           placeholderTextColor="#000"
         />
-        <Link href='/Camera'> Take photo</Link>
+        <Link href='/screen/Camera'> Form Cuaca Lokasi AMP</Link>
+        <Link href='/screen/FormCuacaLahan'> Form Cuaca Lahan</Link>
+        <Link href='/screen/FormKondisiLahan'> Form Kondisi Lahan</Link>
+        <Link href='/screen/InfoProyek'> Info Proyek</Link>
+        <Link href='/screen/ListProyek'> List Proyek</Link>
+        <Link href='/screen/FormDimensiProyek'> Form Proyek</Link>
       </View>
     </View>
    

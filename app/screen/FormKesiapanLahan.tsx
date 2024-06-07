@@ -2,23 +2,23 @@ import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
+
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
-import axios from 'axios';
-import * as FileSystem from 'expo-file-system';
-//import {  } from 'react-native-gesture-handler';
+import { router } from 'expo-router';
 
 export default function App() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
-    const [location, setLocation] = useState(null);
-    const [previewVisible, setPreviewVisible] = useState(false)
+    const [titikLokasi, setTitikLokasi] = useState(null);
+    const [cameraOff, setCameraOff] = useState(null);
+    const [previewAvailable, setPreviewAvailable] = useState(false)
     const [capturedImage, setCapturedImage] = useState<any>(null)
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [cuacaLokasiAmp, setCuacaLokasiAmp] = useState('');
-    const [cuacaLahanPenghamparan, setCuacaLahanPenghamparan] = useState('');
-    const [kondisiLahanPenghamparan, setKondisiLahanPenghamparan] = useState('');
+
 
     const cameraRef = Camera;
 
@@ -30,7 +30,7 @@ export default function App() {
           return;
         }
         let location = await Location.getCurrentPositionAsync();
-        setLocation(location);
+        setTitikLokasi(location);
       })(); 
     });
       
@@ -53,12 +53,12 @@ export default function App() {
     const kirimData = async () => {
       const data = new FormData();
 
-      let titik = location.coords.latitude + "," + location.coords.longitude;
+      //let titik = location.coords.latitude + "," + location.coords.longitude;
       const fileName = capturedImage.split('/').pop();
       //const fileType = fileName.split('.').pop();
       data.append('keterangan', 'aman saja kaka dari hp');
       data.append('cuaca_lokasi_amp', 'cerah');
-      data.append('lokasi_cuaca_amp',titik);
+      data.append('lokasi_cuaca_amp','Soe');
       
       data.append('foto_cuaca_amp', {
         uri: capturedImage,
@@ -67,17 +67,11 @@ export default function App() {
       } as any);
 
   
-      data.append('cuaca_lahan_penghamparan', 'Aman');
-      data.append('kondisi_lahan_penghamparan', 'Aman');
-      data.append('foto_lahan_penghamparan', capturedImage);
-      data.append('lokasi_lahan_penghamparan', titik);
-      data.append('foto_kondisi_lahan_penghamparan', capturedImage);
-      
       
       console.log('Path:', capturedImage);
       console.log('data:', data);
       fetch(
-        'http://192.168.0.9:8000/api/kesiapan_lahan/', {
+        'http://192.168.0.9:8000/api/cuaca_lokasi_amp/', {
         method: 'POST',
         body: data,
         headers:{
@@ -94,34 +88,44 @@ export default function App() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
+  const __savePhoto = async (photo) => {
+    if (savePermission?.status !== 'granted') {
+      await MediaLibrary.requestPermissionsAsync();
+      <Button title="Give Permission" onPress={setSavePermission} />
+      
+    } else {
+      const asset = await MediaLibrary.createAssetAsync(photo);
+      MediaLibrary.createAlbumAsync('Expo', asset)
+        .then(() => {
+
+            setCapturedImage(asset.uri);
+            setPreviewAvailable(true);
+         
+          
+         
+          //router.push({pathname:'/screen/Preview', params: {gambar: asset.uri}});
+        })
+        .catch(error => {
+          console.error('err', error);
+        }); 
+    }
+  }
+
   const __takePicture = async () => {
-    
+
     if (cameraRef) {
         const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
         await cameraRef.current.takePictureAsync(options)
         .then((data) => {
-          setCapturedImage(data.uri);
-          setPreviewVisible(true);
+          __savePhoto(data.uri);
         });
-        //const source = data.uri;
-        if (previewVisible) {
-
-
-            
-            if(savePermission?.status !== 'granted'){
-              await MediaLibrary.requestPermissionsAsync();
-            }
-
-            await MediaLibrary.createAssetAsync(capturedImage)
-                .then((asset) => {setCapturedImage(asset.uri)})
-                .catch((error) => {console.log('error', error)});
-         }
+        
     }
     
   }
   const __retakePicture = () => {
     setCapturedImage(null);
-    setPreviewVisible(false);
+    setPreviewAvailable(false);
   }
 
   return (
@@ -131,48 +135,31 @@ export default function App() {
         placeholder="Cuaca Lokasi AMP"
         onChangeText={setCuacaLokasiAmp}
         value={cuacaLokasiAmp} />
-      <TextInput
-        placeholder="Cuaca Lokasi Penghamparan" 
-        value={cuacaLahanPenghamparan}
-        onChangeText={setCuacaLahanPenghamparan}/>
 
-      <TextInput 
-        placeholder="Kondisi Lahan Penghamparan"
-        value={kondisiLahanPenghamparan}
-        onChangeText={setKondisiLahanPenghamparan}/>
-
-    
-        {previewVisible ? (
+        {previewAvailable ? (
           <View>
             <Text>Preview</Text>
-            { previewVisible ?(
-              
-              <View><Image
-              source={{uri: capturedImage}}
-              style={{ width: 500, height: 500 }}
-          />
+      
+              <Image source={{uri: capturedImage}} style={{width: 200, height: 200}} />
+              <View>
             <Button title="Take photo back" onPress={__retakePicture} />
-            </View>) 
-            : (<Button title='take photo' onPress={console.log('press')}/>)}
+            </View> 
+           
           </View>
           ) : (
-        <CameraView 
-              style={styles.camera} 
-              facing={facing}
-              photo={true}
-              ref={cameraRef}>
-          <View style={styles.buttonContainer}>
-          <MaterialCommunityIcons 
-                  name="circle-outline"   // This is the icon which should take and save image
-                  style={{ color: 'white', fontSize: 100 }}
-                  onPress={__takePicture}
-                  ></MaterialCommunityIcons>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Flip Camera</Text>
-            </TouchableOpacity>
-          </View>
-        </CameraView>
-    )}
+            <View style={styles.container}>
+              <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraRef}>
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity style={styles.button} >
+                    <Feather name="circle" size={56} color="white" onPress={__takePicture} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                    <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
+                  </TouchableOpacity>
+                </View>
+              </CameraView>
+            </View>
+        )}
       
     </View>
     
