@@ -1,26 +1,44 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
+import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 
-export default function App() {
+export default function FormKesiapanLahan() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
-    const [titikLokasi, setTitikLokasi] = useState(null);
-    const [cameraOff, setCameraOff] = useState(null);
-    const [previewAvailable, setPreviewAvailable] = useState(false)
-    const [capturedImage, setCapturedImage] = useState<any>(null)
-    const [isCameraReady, setIsCameraReady] = useState(false);
+    
+    const [lokasiCuacaAmp, setLokasiCuacaAmp] = useState(null);
+    const [lokasiCuacaPenghamparan, setLokasiCuacaPenghamparan] = useState(null);
+
+    const [cameraCuacaAmpOn, setCameraCuacaAmpOn] = useState(false);
+    const [cameraCuacaLahanOn, setCameraCuacaLahanOn] = useState(false);
+    const [cameraKondisiLahanOn, setCameraKondisiLahanOn] = useState(false);
+
+    const [previewCuacaAmpAvailable, setPreviewCuacaAmpAvailable] = useState(false)
+    const [previewCuacaLahanAvailable, setPreviewCuacaLahanAvailable] = useState(false)
+    const [previewKondisiLahanAvailable, setPreviewKondisiLahanAvailable] = useState(false)
+
+    const [capturedCuacaAmpImage, setCapturedCuacaAmpImage] = useState<any>(null)
+    const [capturedCuacaPenghamparanImage, setCapturedCuacaPenghamparanImage] = useState<any>(null)
+    const [capturedKondisiPenghamparanImage, setCapturedKondisiPenghamparanImage] = useState<any>(null)
+
     const [cuacaLokasiAmp, setCuacaLokasiAmp] = useState('');
+    const [cuacaLahanPenghamparan, setCuacaLahanPenghamparan] = useState('');
+    const [kondisiLahanPenghamparan, setKondisiLahanPenghamparan] = useState('');
 
-
-    const cameraRef = Camera;
+    const [keterangan, setKeterangan] = useState('');
+    
+    const cameraCuacaAmpRef     = Camera;
+    const cameraCuacaLahanRef   = Camera;
+    const cameraKondisiLahanRef = Camera;
 
     useEffect(() => {
       (async () => {
@@ -29,8 +47,6 @@ export default function App() {
           console.log('Permission to access location was denied');
           return;
         }
-        let location = await Location.getCurrentPositionAsync();
-        setTitikLokasi(location);
       })(); 
     });
       
@@ -53,25 +69,43 @@ export default function App() {
     const kirimData = async () => {
       const data = new FormData();
 
-      //let titik = location.coords.latitude + "," + location.coords.longitude;
-      const fileName = capturedImage.split('/').pop();
+      let titikCuacaAmp = lokasiCuacaAmp.coords.latitude + "," + lokasiCuacaAmp.coords.longitude;
+      let titikCuacaLahan = lokasiCuacaPenghamparan.coords.latitude + "," + lokasiCuacaPenghamparan.coords.longitude;
+
+      const fileNameCuacaAmp = capturedCuacaAmpImage.split('/').pop();
+      const fileNameKondisiLahan = capturedCuacaPenghamparanImage.split('/').pop();
+      const fileNameCuacaPenghamparan = capturedKondisiPenghamparanImage.split('/').pop();
+      
       //const fileType = fileName.split('.').pop();
-      data.append('keterangan', 'aman saja kaka dari hp');
-      data.append('cuaca_lokasi_amp', 'cerah');
-      data.append('lokasi_cuaca_amp','Soe');
+      data.append('keterangan', keterangan);
+      data.append('cuaca_lokasi_amp', cuacaLokasiAmp);
+      data.append('cuaca_lahan_penghamparan',cuacaLahanPenghamparan);
+      data.append('kondisi_lahan_penghamparan',kondisiLahanPenghamparan);
+
+      data.append('lokasi_cuaca_amp', titikCuacaAmp);
+      data.append('lokasi_lahan_penghamparan', titikCuacaLahan);
       
       data.append('foto_cuaca_amp', {
-        uri: capturedImage,
-        name: fileName,
+        uri: capturedCuacaAmpImage,
+        name: fileNameCuacaAmp,
         type: 'image/*'
       } as any);
 
-  
-      
-      console.log('Path:', capturedImage);
+      data.append('foto_cuaca_lahan_penghamparan', {
+        uri: capturedCuacaPenghamparanImage,
+        name: fileNameCuacaPenghamparan,
+        type: 'image/*'
+      } as any);
+
+      data.append('foto_kondisi_lahan_penghamparan', {
+        uri: capturedKondisiPenghamparanImage,
+        name: fileNameKondisiLahan,
+        type: 'image/*'
+      } as any);
+
       console.log('data:', data);
       fetch(
-        'http://192.168.0.9:8000/api/cuaca_lokasi_amp/', {
+        'http://palugada.me/api/kesiapan_lahan/', {
         method: 'POST',
         body: data,
         headers:{
@@ -84,84 +118,208 @@ export default function App() {
         console.error('Error:', error);
       });
     }
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
-
-  const __savePhoto = async (photo) => {
-    if (savePermission?.status !== 'granted') {
-      await MediaLibrary.requestPermissionsAsync();
-      <Button title="Give Permission" onPress={setSavePermission} />
-      
-    } else {
-      const asset = await MediaLibrary.createAssetAsync(photo);
-      MediaLibrary.createAlbumAsync('Expo', asset)
-        .then(() => {
-
-            setCapturedImage(asset.uri);
-            setPreviewAvailable(true);
-         
-          
-         
-          //router.push({pathname:'/screen/Preview', params: {gambar: asset.uri}});
-        })
-        .catch(error => {
-          console.error('err', error);
-        }); 
+    function toggleCameraFacing() {
+      setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
-  }
 
-  const __takePicture = async () => {
-
-    if (cameraRef) {
-        const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
-        await cameraRef.current.takePictureAsync(options)
-        .then((data) => {
-          __savePhoto(data.uri);
-        });
+    const __setLocation = async (type) => {
+      let location = await Location.getCurrentPositionAsync();
+      if(type === 'cuaca_amp'){
+        setLokasiCuacaAmp(location);
+      }
+      else{
+        setLokasiCuacaPenghamparan(location);
+      }
+    }
+    const __savePhoto = async (photo, type) => {
+      if (savePermission?.status !== 'granted') {
+        await MediaLibrary.requestPermissionsAsync();
+        <Button title="Give Permission" onPress={setSavePermission} />
         
+      } else {
+        const asset = await MediaLibrary.createAssetAsync(photo);
+        MediaLibrary.createAlbumAsync('Expo', asset)
+          .then(() => {
+            
+              if(type === 'cuaca_amp'){
+                setCapturedCuacaAmpImage(asset.uri);
+                setPreviewCuacaAmpAvailable(true);
+              }
+              else if(type === 'cuaca_lahan'){
+                setCapturedCuacaPenghamparanImage(asset.uri);
+                setPreviewCuacaLahanAvailable(true);
+              }
+              else{
+                setCapturedKondisiPenghamparanImage(asset.uri);
+                setPreviewKondisiLahanAvailable(true);
+              }
+          })
+          .catch(error => {
+            console.error('err', error);
+          }); 
+      }
     }
-    
-  }
-  const __retakePicture = () => {
-    setCapturedImage(null);
-    setPreviewAvailable(false);
-  }
+
+    const __takePicture = async (type) => {
+      let cameraRef = null;
+      let typeLokasi = null;
+      if(type === 'cuaca_amp'){
+        cameraRef = cameraCuacaAmpRef;
+        typeLokasi = 'cuaca_amp';
+      }
+      else if(type === 'cuaca_lahan'){
+        cameraRef = cameraCuacaLahanRef;
+        typeLokasi = 'cuaca_lahan';
+      }
+      else{
+        cameraRef = cameraKondisiLahanRef;
+        typeLokasi = 'kondisi_lahan';
+      }
+
+      const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
+      await cameraRef.current.takePictureAsync(options)
+          .then((data) => {
+            __setLocation(typeLokasi);
+            __savePhoto(data.uri, type);
+        });
+    }
+
+    const __retakePicture = () => {
+      setCapturedImage(null);
+      setPreviewAvailable(false);
+    }
+
+    const startCamera = (type) => {
+      if(type === 'cuaca_amp'){
+        cameraCuacaAmpOn === false ? setCameraCuacaAmpOn(true) : setCameraCuacaAmpOn(false);
+      } else if(type === 'cuaca_lahan'){
+        cameraCuacaLahanOn === false ? setCameraCuacaLahanOn(true) : setCameraCuacaLahanOn(false);
+      } else if(type === 'kondisi_lahan'){
+        cameraKondisiLahanOn === false ? setCameraKondisiLahanOn(true) : setCameraKondisiLahanOn(false);
+      }
+    }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+    <ScrollView>
       <Button title="Submit" onPress={kirimData} />
+      <TextInput
+        placeholder="Keterangan"
+        onChangeText={setKeterangan}
+        value={keterangan} />
+
       <TextInput
         placeholder="Cuaca Lokasi AMP"
         onChangeText={setCuacaLokasiAmp}
         value={cuacaLokasiAmp} />
 
-        {previewAvailable ? (
+        {previewCuacaAmpAvailable ? (
           <View>
             <Text>Preview</Text>
       
-              <Image source={{uri: capturedImage}} style={{width: 200, height: 200}} />
+              <Image source={{uri: capturedCuacaAmpImage}} style={{width: 200, height: 200}} />
               <View>
             <Button title="Take photo back" onPress={__retakePicture} />
             </View> 
            
           </View>
-          ) : (
-            <View style={styles.container}>
-              <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraRef}>
-                <View style={styles.buttonContainer}>
-                  <TouchableOpacity style={styles.button} >
-                    <Feather name="circle" size={56} color="white" onPress={__takePicture} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                    <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
-                  </TouchableOpacity>
+          ) : <>
+          {
+            cameraCuacaAmpOn ? (
+              
+                <View style={styles.container}>
+                  <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraCuacaAmpRef}>
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity style={styles.button} >
+                        <Feather name="circle" size={56} color="white" onPress={() => __takePicture('cuaca_amp')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                        <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  </CameraView>
                 </View>
-              </CameraView>
-            </View>
-        )}
+            
+
+            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_amp')} /> )}
+          </>
+        }
+
+      <TextInput
+        placeholder="Cuaca Lahan Penghamparan"
+        onChangeText={setCuacaLahanPenghamparan}
+        value={cuacaLahanPenghamparan} />
+
+      {previewCuacaLahanAvailable ? (
+          <View>
+            <Text>Preview</Text>
       
-    </View>
+              <Image source={{uri: capturedCuacaPenghamparanImage}} style={{width: 200, height: 200}} />
+              <View>
+            <Button title="Take photo back" onPress={__retakePicture} />
+            </View> 
+           
+          </View>
+          ) : <>
+          {
+            cameraCuacaLahanOn ? (
+              
+                <View style={styles.container}>
+                  <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraCuacaLahanRef}>
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity style={styles.button} >
+                        <Feather name="circle" size={56} color="white" onPress={() => __takePicture('cuaca_lahan')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                        <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  </CameraView>
+                </View>
+            
+
+            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_lahan')} /> )}
+          </>
+        }
+
+<TextInput
+        placeholder="Kondisi Lahan Penghamparan"
+        onChangeText={setKondisiLahanPenghamparan}
+        value={kondisiLahanPenghamparan} />
+
+      {previewKondisiLahanAvailable ? (
+          <View>
+            <Text>Preview</Text>
+      
+              <Image source={{uri: capturedKondisiPenghamparanImage}} style={{width: 200, height: 200}} />
+              <View>
+            <Button title="Take photo back" onPress={__retakePicture} />
+            </View> 
+           
+          </View>
+          ) : <>
+          {
+            cameraKondisiLahanOn ? (
+              
+                <View style={styles.container}>
+                  <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraKondisiLahanRef}>
+                    <View style={styles.buttonContainer}>
+                      <TouchableOpacity style={styles.button} >
+                        <Feather name="circle" size={56} color="white" onPress={() => __takePicture('kondisi_lahan')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                        <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                  </CameraView>
+                </View>
+            
+
+            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('kondisi_lahan')} /> )}
+          </>
+        }
+      </ScrollView>
+    </SafeAreaView>
     
   );
 }

@@ -72,7 +72,7 @@ export default function App() {
       console.log('Path:', capturedImage);
       console.log('data:', data);
       fetch(
-        'http://192.168.0.9:8000/api/cuaca_lahan_penghamparan/', {
+        'http://palugada.me/api/cuaca_lahan_penghamparan/', {
         method: 'POST',
         body: data,
         headers:{

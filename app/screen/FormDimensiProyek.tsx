@@ -87,7 +87,6 @@ export default function App() {
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
 
-
       data.append('lokasi_foto_panjang',titikPanjang);
       data.append('lokasi_foto_lebar',titikLebar);
       data.append('lokasi_foto_tebal',titikTebal);
@@ -113,7 +112,7 @@ export default function App() {
       console.log('data:', data);
       
       axios.post(
-        'http://192.168.0.9:8000/api/dimensi_lahan/', 
+        'http://palugada.me/api/dimensi_lahan/', 
         data,
         {
           headers:{

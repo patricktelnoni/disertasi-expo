@@ -7,14 +7,15 @@ const DetailProyek: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const params = useGlobalSearchParams<{id: string}>();
-    const url    = 'https://jsonplaceholder.typicode.com/posts/'+params.id+'';
+    //const url    = 'https://jsonplaceholder.typicode.com/posts/'+params.id+'';
+    const url    = 'http://palugada.me/api/info_proyek/'+params.id+'';
     console.log("Params", url);
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(url);
                 const jsonData = await response.json();
-                setData(jsonData);
+                setData(jsonData.data);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -31,8 +32,13 @@ const DetailProyek: React.FC = () => {
     return (
         <View>
             <Text>Detail Proyek</Text>
-            <Text>Proyek Name: {data.title}</Text>
-            <Text>Proyek Description: {data.body}</Text>
+            <Text>Proyek Name: {data.nama_paket}</Text>
+            <Text>Proyek Description: {data.nama_satker}</Text>
+            <Text>Proyek Description: {data.nama_ppk}</Text>
+            <Text>Proyek Description: {data.nilai_kontrak}</Text>
+            <Text>Proyek Description: {data.lokasi_pekerjaan}</Text>
+            <Text>Proyek Description: {data.tanggal_pho}</Text>
+            <Text>Proyek Description: {data.tanggal_kontrak}</Text>
             {/* Render other details here */}
         </View>
     );
