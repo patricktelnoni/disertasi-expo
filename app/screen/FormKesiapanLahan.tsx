@@ -105,7 +105,7 @@ export default function FormKesiapanLahan() {
 
       console.log('data:', data);
       fetch(
-        'http://palugada.me/api/kesiapan_lahan/', {
+        'https://palugada.me/api/kesiapan_lahan/', {
         method: 'POST',
         body: data,
         headers:{

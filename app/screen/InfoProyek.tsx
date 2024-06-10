@@ -36,7 +36,7 @@ const FormProyekScreen = () => {
     data.append('tanggal_kontrak', tanggalKontrak);
     data.append('lokasi_pekerjaan', lokasiPekerjaan);
     
-    fetch('http://palugada.me/api/info_proyek/', {
+    fetch('https://palugada.me/api/info_proyek/', {
       method: 'POST',
       body: data,
     }).then((response) => {

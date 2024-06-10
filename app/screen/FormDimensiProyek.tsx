@@ -112,7 +112,7 @@ export default function App() {
       console.log('data:', data);
       
       axios.post(
-        'http://palugada.me/api/dimensi_lahan/', 
+        'https://palugada.me/api/dimensi_lahan/', 
         data,
         {
           headers:{

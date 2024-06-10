@@ -15,7 +15,7 @@ const ListProyek = () => {
     const fetchData = async () => {
         try {
             //const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-            const response = await fetch('http://palugada.me/api/info_proyek/');
+            const response = await fetch('https://palugada.me/api/info_proyek/');
             const jsonData = await response.json();
             //console.log(jsonData.data);
             setData(jsonData.data);
