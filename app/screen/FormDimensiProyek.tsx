@@ -121,6 +121,9 @@ export default function App() {
         }
       ).then((response) => {
         console.log('Response:',response);
+        if(response.status === 201){
+          alert('Data berhasil disimpan');
+        } 
       }).
       catch((error) => {
         console.error('Error:', error);

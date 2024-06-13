@@ -7,6 +7,10 @@ import { ThemedView } from '@/components/ThemedView';
 import { Link } from 'expo-router';
 import 'react-native-gesture-handler';
 import { useState } from 'react';
+import { HStack, Center, Stack, NativeBaseProvider, Box } from 'native-base';
+import { Feather } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function HomeScreen() {
   const [email, setEmail] = useState('');
@@ -15,6 +19,7 @@ export default function HomeScreen() {
 
 
   return (
+    <NativeBaseProvider>
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
@@ -36,25 +41,53 @@ export default function HomeScreen() {
         },
       ]}>
     
-      <View style={{flex: 0.5}}>
-        <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.textInput}/>
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-          style={styles.textInput}
-          placeholderTextColor="#000"
-        />
-        <Link href='/screen/InfoProyek'> Info Proyek</Link>
-        <Link href='/screen/ListProyek'> List Proyek</Link>
-        <Link href='/screen/FormDimensiProyek'> Form Proyek</Link>
-        <Link href='/screen/FormKesiapanLahan'> Form Kesiapan Lahan</Link>
-      </View>
+        <View style={{flex: 0.5}}>
+          <Stack space={2} alignItems="center" direction={"column"}>
+            <HStack space={2} alignItems="center">
+              <Link href='/screen/InfoProyek'> 
+                <Center size={32} bg="primary.400" rounded="md" _text={{
+                color: "white"
+              }} shadow={3}>
+                  <Feather name="info" size={36} color="white" />Info Proyek
+                </Center>
+              </Link>
+              
+              
+              <Link href='/screen/ListProyek'> 
+                <Center size={32} bg="fuchsia.400" rounded="md" _text={{
+                  color: "white"
+                }} shadow={3}>
+                  <FontAwesome name="list-alt" size={36} color="white" />List Proyek
+                </Center>
+              </Link>               
+            </HStack>
+
+            <HStack space={2} alignItems="center">
+              <Box>
+                <Link href='/screen/FormDimensiProyek'> 
+                  <Center size={32} bg="secondary.400" rounded="md" _text={{
+                    color: "white"
+                  }} shadow={3}>
+                    <AntDesign name="form" size={36} color="white" /> Form Proyek
+                  </Center>
+                </Link>
+              </Box>
+              <Box>
+                <Link href='/screen/FormKesiapanLahan'> 
+                  <Center size={32} bg="emerald.400" rounded="md" _text={{
+                    color: "white"
+                  }} shadow={3}>
+                    <FontAwesome name="wpforms" size={36} color="white" /> Form Kesiapan Lahan
+                  </Center>
+                </Link>
+              </Box>
+            </HStack>
+          </Stack>      
+        </View>
     </View>
    
     </ParallaxScrollView>
-
+</NativeBaseProvider>
   );
 }
 

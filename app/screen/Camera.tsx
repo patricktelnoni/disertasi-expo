@@ -97,12 +97,8 @@ export default function App() {
       const asset = await MediaLibrary.createAssetAsync(photo);
       MediaLibrary.createAlbumAsync('Expo', asset)
         .then(() => {
-
             setCapturedImage(asset.uri);
-            setPreviewAvailable(true);
-         
-          
-         
+            setPreviewAvailable(true);       
           //router.push({pathname:'/screen/Preview', params: {gambar: asset.uri}});
         })
         .catch(error => {

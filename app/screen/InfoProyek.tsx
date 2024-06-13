@@ -1,5 +1,14 @@
 import React, {useState} from 'react';
-import {Text, StyleSheet, View, Button, TextInput} from 'react-native';
+import {
+  Text, 
+  StyleSheet, 
+  View, 
+  Button, 
+  TextInput, 
+  Modal, 
+  Pressable, 
+  ImageBackground } from 'react-native';
+import {router} from 'expo-router';
 
 
 const styles = StyleSheet.create({
@@ -9,6 +18,47 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: 'black',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 
@@ -24,6 +74,8 @@ const FormProyekScreen = () => {
   const [lokasiPekerjaan, setLokasiPekerjaan] = useState('');
   const [tanggalPho, setTanggalPho] = useState('2024-05-28');
   const [tanggalKontrak, setTanggalKontrak] = useState('2024-05-29');
+  const [modalVisible, setModalVisible] = useState(false);
+ 
   const kirimData = () => {
     var data = new FormData();
     data.append('nama_paket', namaPaket); 
@@ -41,10 +93,18 @@ const FormProyekScreen = () => {
       body: data,
     }).then((response) => {
       console.log('Response:',response);
+      if(response.status == 200){
+        setModalVisible(true);
+      }
     }).
     catch((error) => {
       console.error('Error:', error);
     });
+  }
+
+  const pindahListProyek = () => {
+    setModalVisible(!modalVisible);
+    router.push({pathname:'/screen/ListProyek'});
   }
 
   
@@ -57,6 +117,26 @@ const FormProyekScreen = () => {
           flexDirection: 'column',
         },
       ]}>
+       <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Data berhasil tersimpan!</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={pindahListProyek}>
+              <Text style={styles.textStyle}>Ok</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
       <View style={{flex: 0}}>
         <Text>Form tambah proyek</Text>
       </View>
@@ -118,3 +198,4 @@ const FormProyekScreen = () => {
 };
  
 export default FormProyekScreen;
+

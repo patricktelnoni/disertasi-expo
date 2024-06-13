@@ -33,12 +33,12 @@ const DetailProyek: React.FC = () => {
         <View>
             <Text>Detail Proyek</Text>
             <Text>Proyek Name: {data.nama_paket}</Text>
-            <Text>Proyek Description: {data.nama_satker}</Text>
-            <Text>Proyek Description: {data.nama_ppk}</Text>
-            <Text>Proyek Description: {data.nilai_kontrak}</Text>
-            <Text>Proyek Description: {data.lokasi_pekerjaan}</Text>
-            <Text>Proyek Description: {data.tanggal_pho}</Text>
-            <Text>Proyek Description: {data.tanggal_kontrak}</Text>
+            <Text>Nama Satker: {data.nama_satker}</Text>
+            <Text>Nama PPK: {data.nama_ppk}</Text>
+            <Text>Nilai Kontrak: {data.nilai_kontrak}</Text>
+            <Text>Lokasi Pekerjaan: {data.lokasi_pekerjaan}</Text>
+            <Text>Tanggal PHO: {data.tanggal_pho}</Text>
+            <Text>Tanggal Kontraks: {data.tanggal_kontrak}</Text>
             {/* Render other details here */}
         </View>
     );
