@@ -2,19 +2,22 @@ import React, {useState} from 'react';
 import {
   Text, 
   StyleSheet, 
-  View, 
-  Button, 
+  View,  
   TextInput, 
   Modal, 
   Pressable, 
-  ImageBackground } from 'react-native';
+  ScrollView } from 'react-native';
+import {Button, NativeBaseProvider} from 'native-base';
 import {router} from 'expo-router';
+import { CustomForm } from './CustomForm';
+
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    maxHeight:'100%',
   },
   textInput: {
     color: 'black',
@@ -23,7 +26,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 220,
   },
   modalView: {
     margin: 20,
@@ -88,6 +91,7 @@ const FormProyekScreen = () => {
     data.append('tanggal_kontrak', tanggalKontrak);
     data.append('lokasi_pekerjaan', lokasiPekerjaan);
     
+    //console.log('Data:', data);
     fetch('https://palugada.me/api/info_proyek/', {
       method: 'POST',
       body: data,
@@ -108,92 +112,87 @@ const FormProyekScreen = () => {
   }
 
   
+  
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          // Try setting flexDirection to "row".
-          flexDirection: 'column',
-        },
-      ]}>
-       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Data berhasil tersimpan!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={pindahListProyek}>
-              <Text style={styles.textStyle}>Ok</Text>
-            </Pressable>
+    <NativeBaseProvider>
+      <View
+        style={[
+          styles.container,
+          
+        ]}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Data berhasil tersimpan!</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={pindahListProyek}>
+                <Text style={styles.textStyle}>Ok</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <View style={{flex: 0}}>
-        <Text>Form tambah proyek</Text>
+        <View style={{flex: 0}}>
+          <Text>Form tambah proyek</Text>
+        </View>
+        <View >
+          <ScrollView>
+            <CustomForm 
+              label='Nama Paket' 
+              errorMessage='Nama Paket harus diisi'
+              value={namaPaket}
+              onChangeText={setNamaPaket}/>
+
+            <CustomForm 
+              label='Nama PPK' 
+              errorMessage='Nama PPK harus diisi'
+              value={namaPpk}
+              onChangeText={setNamaPpk}/>
+
+            <CustomForm 
+              label='Nama Satker' 
+              errorMessage='Nama Satker harus diisi'
+              value={namaSatker}
+              onChangeText={setNamaSatker}/>
+
+            <CustomForm 
+              label='Nilai Kontrak' 
+              errorMessage='Nilai Kontrak harus diisi'
+              value={nilaiKontrak}
+              onChangeText={setNilaiKontrak}/>
+
+            <CustomForm 
+              label='Nomor Kontrak' 
+              errorMessage='Nomor Kontrak harus diisi'
+              value={nomorKontrak}
+              onChangeText={setNomorKontrak}/>
+
+            <CustomForm 
+              label='Masa pelaksanaan' 
+              errorMessage='Masa Pelaksanaan harus diisi'
+              value={masaPelaksanaan}
+              onChangeText={setMasaPelaksanaan}/>
+
+            <CustomForm 
+              label='Lokasi Pekerjaan' 
+              errorMessage='Lokasi Pekerjaan harus diisi'
+              value={lokasiPekerjaan}
+              onChangeText={setLokasiPekerjaan}/>
+
+            <Button onPress={kirimData} colorScheme="cyan">Submit</Button> 
+
+            </ScrollView>
+        </View>
       </View>
-      <View style={{flex: 0.5}}>
-        <TextInput
-          placeholder="Nama Paket"
-          placeholderTextColor="#000"
-          value={namaPaket}
-          onChangeText={setNamaPaket}
-          style={styles.textInput}
-        />
-        
-        <TextInput
-          placeholder="Nama PPK"
-          value={namaPpk}
-          onChangeText={setNamaPpk}
-          style={styles.textInput}
-          placeholderTextColor="#000"
-        />
-        <TextInput
-          placeholder="Nama Satker"
-          value={namaSatker}
-          onChangeText={setNamaSatker}
-          style={styles.textInput}
-          placeholderTextColor="#000"
-        />
-        <TextInput
-          placeholder="Nilai Kontrak"
-          value={nilaiKontrak}
-          onChangeText={setNilaiKontrak}
-          style={styles.textInput}
-          placeholderTextColor="#000"
-        />
-        <TextInput
-          placeholder="Nomor Kontrak"
-          value={nomorKontrak}
-          onChangeText={setNomorKontrak}
-          style={styles.textInput}
-          placeholderTextColor="#0A1"
-        />
-        <TextInput
-          placeholder="Masa Pelaksanaan"
-          value={masaPelaksanaan}
-          onChangeText={setMasaPelaksanaan}
-          style={styles.textInput}
-          placeholderTextColor="#0A1"
-        />
-        <TextInput
-          placeholder="Lokasi Pekerjaan"
-          value={lokasiPekerjaan}
-          onChangeText={setLokasiPekerjaan}
-          style={styles.textInput}
-          placeholderTextColor="#0A1"
-        />
-        <Button title="Submit" onPress={kirimData} />
-      </View>
-    </View>
+    </NativeBaseProvider>
   );
 };
  

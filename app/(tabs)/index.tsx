@@ -68,7 +68,7 @@ export default function HomeScreen() {
                   <Center size={32} bg="secondary.400" rounded="md" _text={{
                     color: "white"
                   }} shadow={3}>
-                    <AntDesign name="form" size={36} color="white" /> Form Proyek
+                    <AntDesign name="form" size={36} color="white" /> Form Dimensi Proyek
                   </Center>
                 </Link>
               </Box>

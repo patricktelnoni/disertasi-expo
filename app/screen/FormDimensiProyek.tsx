@@ -1,8 +1,10 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
+import { NativeBaseProvider, Button, FormControl } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
+import { CustomForm } from './CustomForm';
 
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
@@ -223,16 +225,27 @@ export default function App() {
     }
 
   return (
+    <NativeBaseProvider>
+      <View
+        style={[
+          styles.container,
+          
+        ]}>
     <SafeAreaView style={styles.container}>
       <ScrollView>
-      <Button title="Submit" onPress={kirimData} />
-      <TextInput
-        placeholder="Panjang Pekerjaan"
-        onChangeText={setPanjangPekerjaan}
-        value={panjangPekerjaan} />
+      
+
+      <CustomForm 
+        label={'Panjang Pekerjaan'}
+        errorMessage={'Panjang Pekerjaan harus diisi'}
+        value={panjangPekerjaan}
+        onChangeText={setPanjangPekerjaan} />
+      
+      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Panjang Pekerjaan</FormControl.Label>
+
         {
           previewPanjangAvailable ? 
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
                 <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />
                 <View>
@@ -254,18 +267,23 @@ export default function App() {
                     </View>
                 </CameraView>
             </View>:
-            <AntDesign name="camera" size={24} color="black" onPress={startCameraPanjang} /> 
-           
+            <View style={styles.cameraIcon}>
+              <AntDesign name="camera" size={24} color="black" onPress={startCameraPanjang} /> 
+            </View>
             }</>
         }
 
-        <TextInput
-            placeholder="Lebar Pekerjaan"
-            onChangeText={setLebarPekerjaan}
-            value={lebarPekerjaan} />
+      <CustomForm 
+        label={'Lebar Pekerjaan'}
+        errorMessage={'Lebar Pekerjaan harus diisi'}
+        value={lebarPekerjaan}
+        onChangeText={setLebarPekerjaan} />   
+
+      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Lebar Pekerjaan</FormControl.Label>
+
         {
           previewLebarAvailable ? 
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
                 <Image source={{uri: capturedLebarImage}} style={{width: 200, height: 200}} />
                 <View>
@@ -287,18 +305,24 @@ export default function App() {
                     </View>
                 </CameraView>
             </View>:
-            <AntDesign name="camera" size={24} color="black" onPress={startCameraLebar} /> 
+            <View style={styles.cameraIcon}>
+              <AntDesign name="camera" size={24} color="black" onPress={startCameraLebar} /> 
+            </View>
            
             }</>
         }
 
-        <TextInput
-            placeholder="Tebal Pekerjaan"
-            onChangeText={setTebalPekerjaan}
-            value={tebalPekerjaan} />
+        <CustomForm 
+          label={'Tebal Pekerjaan'}
+          errorMessage={'Tebal Pekerjaan harus diisi'}
+          value={tebalPekerjaan}
+          onChangeText={setTebalPekerjaan} />
+
+        <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Tebal Pekerjaan</FormControl.Label>
+
         {
           previewTebalAvailable ? 
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
                 <Image source={{uri: capturedTebalImage}} style={{width: 200, height: 200}} />
                 <View>
@@ -320,18 +344,24 @@ export default function App() {
                     </View>
                 </CameraView>
             </View>:
-            <AntDesign name="camera" size={24} color="black" onPress={startCameraTebal} /> 
-           
+            <View style={styles.cameraIcon}>
+              <AntDesign name="camera" size={24} color="black" onPress={startCameraTebal} /> 
+            </View>
             }</>
         }
-        
+        <Button colorScheme="cyan" onPress={kirimData} >Submit</Button>
       </ScrollView>
     </SafeAreaView>
+    </View>
+    </NativeBaseProvider>
     
   );
 }
 
 const styles = StyleSheet.create({
+  cameraIcon:{
+    marginLeft: 10,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

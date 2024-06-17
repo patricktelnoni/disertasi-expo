@@ -1,10 +1,11 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
 import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { CustomForm } from './CustomForm';
+import { NativeBaseProvider, Button, FormControl } from 'native-base';
 
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
@@ -200,21 +201,28 @@ export default function FormKesiapanLahan() {
     }
 
   return (
+    <NativeBaseProvider>
     <SafeAreaView style={styles.container}>
     <ScrollView>
-      <Button title="Submit" onPress={kirimData} />
-      <TextInput
-        placeholder="Keterangan"
-        onChangeText={setKeterangan}
-        value={keterangan} />
+      
+      <CustomForm 
+        label="Keterangan" 
+        onChangeText={setKeterangan} 
+        value={keterangan} 
+        errorMessage="Keterangan harus diisi" />
+  
+  
 
-      <TextInput
-        placeholder="Cuaca Lokasi AMP"
-        onChangeText={setCuacaLokasiAmp}
-        value={cuacaLokasiAmp} />
+      <CustomForm 
+        label="Cuaca Lokasi Amp" 
+        onChangeText={setCuacaLokasiAmp} 
+        value={cuacaLokasiAmp} 
+        errorMessage="Cuaca Lokasi AMP harus diisi" />
+      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Cuaca Lokasi Amp</FormControl.Label>
+
 
         {previewCuacaAmpAvailable ? (
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
       
               <Image source={{uri: capturedCuacaAmpImage}} style={{width: 200, height: 200}} />
@@ -241,17 +249,24 @@ export default function FormKesiapanLahan() {
                 </View>
             
 
-            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_amp')} /> )}
+            ):(
+              <View style={styles.cameraIcon}>
+                <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_amp')} /> 
+              </View>
+            )}
           </>
         }
 
-      <TextInput
-        placeholder="Cuaca Lahan Penghamparan"
-        onChangeText={setCuacaLahanPenghamparan}
-        value={cuacaLahanPenghamparan} />
+      <CustomForm 
+        label="Cuaca Lahan Penghamparan" 
+        onChangeText={setCuacaLahanPenghamparan} 
+        value={cuacaLahanPenghamparan} 
+        errorMessage="Cuaca Lahan Penghamparan harus diisi" />
+
+      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Cuaca Lahan Penghamparan</FormControl.Label>
 
       {previewCuacaLahanAvailable ? (
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
       
               <Image source={{uri: capturedCuacaPenghamparanImage}} style={{width: 200, height: 200}} />
@@ -278,17 +293,25 @@ export default function FormKesiapanLahan() {
                 </View>
             
 
-            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_lahan')} /> )}
+            ):(
+            
+              <View style={styles.cameraIcon}>
+                <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('cuaca_lahan')} /> 
+              </View>
+            )}
           </>
         }
 
-<TextInput
-        placeholder="Kondisi Lahan Penghamparan"
-        onChangeText={setKondisiLahanPenghamparan}
-        value={kondisiLahanPenghamparan} />
+      <CustomForm 
+        label="Kondisi Lahan Penghamparan" 
+        onChangeText={setKondisiLahanPenghamparan} 
+        value={kondisiLahanPenghamparan} 
+        errorMessage="Kondisi Lahan Penghamparan harus diisi" />
+
+      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Kondisi Lahan</FormControl.Label>
 
       {previewKondisiLahanAvailable ? (
-          <View>
+          <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
       
               <Image source={{uri: capturedKondisiPenghamparanImage}} style={{width: 200, height: 200}} />
@@ -315,16 +338,26 @@ export default function FormKesiapanLahan() {
                 </View>
             
 
-            ):(<AntDesign name="camera" size={24} color="black" onPress={() => startCamera('kondisi_lahan')} /> )}
+            ):(
+              <View style={styles.cameraIcon}>
+                <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('kondisi_lahan')} /> 
+              </View>
+              )}
           </>
         }
+        <Button onPress={kirimData} colorScheme="cyan">Submit</Button>
       </ScrollView>
     </SafeAreaView>
+
+    </NativeBaseProvider>
     
   );
 }
 
 const styles = StyleSheet.create({
+  cameraIcon:{
+    marginLeft: 10,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import {HStack, Avatar, Box, Stack, NativeBaseProvider, Center, VStack, Divider} from 'native-base';
+import { FontAwesome5 } from '@expo/vector-icons';
+import {HStack, Box, NativeBaseProvider, VStack, Divider} from 'native-base';
 import { Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
@@ -30,7 +30,6 @@ const ListProyek = () => {
     }
 
     const renderItem = ({ item }) => (
-        
         <Box border="1" borderRadius="md">
             <VStack space="4" >
                 <Box px="4" pt="4">
@@ -46,16 +45,16 @@ const ListProyek = () => {
                     <HStack space={2}>
                         <TouchableWithoutFeedback onPress={() => getDetail(item.id)}> 
                             <View style={styles.detailButton}>
-                                <FontAwesome5 name="ruler-combined" size={16} color="white" style={styles.buttonText}>
-                                    <Text >Dimensi Proyek</Text>
-                                </FontAwesome5>  
+                                <FontAwesome5 name="ruler" size={16} color="white" style={styles.buttonText}>
+                                    <Text style={{fontFamily:"arial"}}>Dimensi Proyek</Text>
+                                </FontAwesome5>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback onPress={() => getDetail(item.id)}>
                             <View style={styles.detailButton}>
-                                <Octicons name="check-circle" size={16} color="white" style={styles.buttonText}>
-                                    <Text >Kesiapan Lahan</Text>
-                                </Octicons>
+                                <FontAwesome5 name="check" size={16} color="white" style={styles.buttonText}>
+                                    <Text style={{fontFamily:"arial"}}>Kesiapan Lahan</Text>
+                                </FontAwesome5>
                             </View>
                         </TouchableWithoutFeedback>
                     </HStack>
@@ -89,8 +88,8 @@ const styles = {
         borderRadius:10,
         borderWidth: 1,
         borderColor: '#fff',
-        height: 40,
-        innerWidth:150,
+        height: 50,
+        width:175,
     },
     buttonText:{
         color: 'white',
