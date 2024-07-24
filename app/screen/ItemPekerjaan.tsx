@@ -74,75 +74,72 @@ const ItemPekerjaan = () => {
 
     let arr = [];
 
-    const handleNext = () => {
-      console.log(volumePekerjaan);
-      console.log(satuanPekerjaan);
-      console.log(hargaSatuan);
-      console.log(namaItemPekerjaan);
-     
-    };
-
     const handleFinish = () => {
-      
       const url    = 'https://palugada.me/api/info_proyek/'+params.id+'';
+      let dataKirim = new FormData();
+      let itemPekerjaan = [];
+      namaItemPekerjaan.map((item, index) => {
+        itemPekerjaan.push({
+          nama_item_pekerjaan : item,
+          volume_pekerjaan    : volumePekerjaan[index],
+          satuan_pekerjaan    : satuanPekerjaan[index],
+          harga_satuan        : hargaSatuan[index]
+        });
+      });
+      dataKirim.append('item_pekerjaan', JSON.stringify(itemPekerjaan));
+      dataKirim.append('data', params.formData);
+      console.log(dataKirim);
     }
     for (let index = 0; index < Number(params.jumlahItem); index++) {
-      arr.push(index);
-    }  
-
-    let totalItemPekerjaan = arr.map((index) => {      
-      return (
-        <ProgressStep key={index+1}
-          onNext={handleNext}
-          onSubmit={handleFinish}>
-          <Text>Item Pekerjaan {index+1}</Text>
-          
-          <VStack width="90%" mx="3" maxW="300px">
-              <FormControl isRequired>
-                  <FormControl.Label _text={{bold: true}}>Nama Item Pekerjaan {index+1}</FormControl.Label>
-                  <Input 
-                  value={namaItemPekerjaan[index]}
-                    onChangeText={ (value) => {
-                      namaItemPekerjaan[index] = value
-                      setNamaItemPekerjaan([...namaItemPekerjaan], namaItemPekerjaan);                                    
-                  }}/>
-              </FormControl>
-          </VStack>
-          <VStack width="90%" mx="3" maxW="300px">
-              <FormControl isRequired>
-                  <FormControl.Label _text={{bold: true}}>Volume Pekerjaan {index+1}</FormControl.Label>
-                  <Input value={volumePekerjaan[index]} onChangeText={(value) => {
-                      volumePekerjaan[index] = value
-                      setVolumePekerjaan([...volumePekerjaan], volumePekerjaan);
-                  }}/>
-              </FormControl>
-          </VStack>
-         <VStack width="90%" mx="3" maxW="300px">
-              <FormControl isRequired>
-                  <FormControl.Label _text={{bold: true}}>Satuan Pekerjaan {index+1}</FormControl.Label>
-                  <Input 
-                    value={satuanPekerjaan[index]}
-                    onChangeText={(value) => {
-                      satuanPekerjaan[index] = value
-                      setSatuanPekerjaan([...satuanPekerjaan], satuanPekerjaan);
-                  }}/>
-              </FormControl>
-          </VStack>
-          <VStack width="90%" mx="3" maxW="300px">
-              <FormControl isRequired>
-                  <FormControl.Label _text={{bold: true}}>Harga Satuan Pekerjaan {index+1}</FormControl.Label>
-                  <Input
-                  value={hargaSatuan[index]} 
+      arr.push(<ProgressStep key={index+1}
+        onSubmit={handleFinish}>
+        <Text>Item Pekerjaan {index+1}</Text>
+        
+        <VStack width="90%" mx="3" maxW="300px">
+            <FormControl isRequired>
+                <FormControl.Label _text={{bold: true}}>Nama Item Pekerjaan {index+1}</FormControl.Label>
+                <Input 
+                value={namaItemPekerjaan[index]}
+                  onChangeText={ (value) => {
+                    namaItemPekerjaan[index] = value
+                    setNamaItemPekerjaan([...namaItemPekerjaan], namaItemPekerjaan);                                    
+                }}/>
+            </FormControl>
+        </VStack>
+        <VStack width="90%" mx="3" maxW="300px">
+            <FormControl isRequired>
+                <FormControl.Label _text={{bold: true}}>Volume Pekerjaan {index+1}</FormControl.Label>
+                <Input value={volumePekerjaan[index]} onChangeText={(value) => {
+                    volumePekerjaan[index] = value
+                    setVolumePekerjaan([...volumePekerjaan], volumePekerjaan);
+                }}/>
+            </FormControl>
+        </VStack>
+       <VStack width="90%" mx="3" maxW="300px">
+            <FormControl isRequired>
+                <FormControl.Label _text={{bold: true}}>Satuan Pekerjaan {index+1}</FormControl.Label>
+                <Input 
+                  value={satuanPekerjaan[index]}
                   onChangeText={(value) => {
-                      hargaSatuan[index] = value
-                      setHargaSatuan([...hargaSatuan], hargaSatuan);
-                  }}/>
-              </FormControl>
-          </VStack>
-      </ProgressStep>
-      );
-    });
-    
+                    satuanPekerjaan[index] = value
+                    setSatuanPekerjaan([...satuanPekerjaan], satuanPekerjaan);
+                }}/>
+            </FormControl>
+        </VStack>
+        <VStack width="90%" mx="3" maxW="300px">
+            <FormControl isRequired>
+                <FormControl.Label _text={{bold: true}}>Harga Satuan Pekerjaan {index+1}</FormControl.Label>
+                <Input
+                value={hargaSatuan[index]} 
+                onChangeText={(value) => {
+                    hargaSatuan[index] = value
+                    setHargaSatuan([...hargaSatuan], hargaSatuan);
+                }}/>
+            </FormControl>
+        </VStack>
+    </ProgressStep>);
+    }  
+  
     return (
         <NativeBaseProvider>
             <View style={{flex: 1}}>
@@ -165,7 +162,7 @@ const ItemPekerjaan = () => {
                 </Modal>
                 <Text>Daftar Pekerjaan</Text>
                 <ProgressSteps>
-                    {totalItemPekerjaan}
+                    {arr}
                 </ProgressSteps>
             </View>
         </NativeBaseProvider>

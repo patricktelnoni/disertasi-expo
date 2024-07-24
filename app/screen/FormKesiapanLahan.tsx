@@ -210,8 +210,6 @@ export default function FormKesiapanLahan() {
         onChangeText={setKeterangan} 
         value={keterangan} 
         errorMessage="Keterangan harus diisi" />
-  
-  
 
       <CustomForm 
         label="Cuaca Lokasi Amp" 
@@ -219,8 +217,6 @@ export default function FormKesiapanLahan() {
         value={cuacaLokasiAmp} 
         errorMessage="Cuaca Lokasi AMP harus diisi" />
       <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Cuaca Lokasi Amp</FormControl.Label>
-
-
         {previewCuacaAmpAvailable ? (
           <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>

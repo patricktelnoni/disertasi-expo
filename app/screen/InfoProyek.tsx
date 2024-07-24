@@ -7,7 +7,7 @@ import {
   Modal, 
   Pressable, 
   ScrollView } from 'react-native';
-import {Button, NativeBaseProvider} from 'native-base';
+import {Button, NativeBaseProvider, Select, CheckIcon} from 'native-base';
 import {router} from 'expo-router';
 import { CustomForm } from './CustomForm';
 
@@ -78,25 +78,28 @@ const FormProyekScreen = () => {
  
   const kirimData = () => {
     //var data = new FormData();
-    const data: string[] = [];
-    data.push('nama_paket', namaPaket); 
-    data.push('nama_ppk', namaPpk);
-    data.push('nama_satker', namaSatker);
-    data.push('nilai_kontrak', nilaiKontrak);
-    data.push('nomor_kontrak', nomorKontrak);
-    data.push('masa_pelaksanaan', masaPelaksanaan);
-    data.push('tanggal_pho', tanggalPho);
-    data.push('tanggal_kontrak', tanggalKontrak);
-    data.push('lokasi_pekerjaan', lokasiPekerjaan);
+    //const data: string[] = [];
+    let data = [{
+                'nama_paket': namaPaket, 
+                'nama_ppk': namaPpk, 
+                'nama_satker': namaSatker, 
+                'nilai_kontrak': nilaiKontrak, 
+                'nomor_kontrak': nomorKontrak, 
+                'masa_pelaksanaan': masaPelaksanaan, 
+                'tanggal_pho': tanggalPho, 
+                'tanggal_kontrak': tanggalKontrak, 
+                'lokasi_pekerjaan': lokasiPekerjaan
+              }]; 
+    
     
     //console.log('Data:', data);
 
-    router.push({pathname:'/screen/ItemPekerjaan', params: {jumlahItem: jumlahPekerjaan, formData: data}});
+    router.push({pathname:'/screen/ItemPekerjaan', params: {jumlahItem: jumlahPekerjaan, formData: JSON.stringify(data)}});
     
   }
 
   const pindahListProyek = () => {
-    setModalVisible(!modalVisible);
+    //setModalVisible(!modalVisible);
     router.push({pathname:'/screen/ListProyek'});
   }
 
@@ -158,12 +161,22 @@ const FormProyekScreen = () => {
               value={lokasiPekerjaan}
               onChangeText={setLokasiPekerjaan}/>
 
-            <CustomForm 
-              label='Jumlah Pekerjaan' 
-              errorMessage='Jumlah Pekerjaan harus diisi'
-              value={jumlahPekerjaan}
-              onChangeText={setJumlahPekerjaan}/>
-
+            <Select selectedValue={jumlahPekerjaan} 
+                minWidth="200" 
+                maxW="300px"
+                accessibilityLabel="Pilih Jumlah Pekerjaan" 
+                placeholder="Pilih Jumlah Pekerjaan" 
+                _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="3" />
+                }} mt={1} 
+                onValueChange={itemValue => setJumlahPekerjaan(itemValue)}>
+                      <Select.Item label="1" value="1" />
+                      <Select.Item label="2" value="2" />
+                      <Select.Item label="3" value="3" />
+                      <Select.Item label="4" value="4" />
+                      <Select.Item label="5" value="5" />
+            </Select>
             <Button onPress={kirimData} colorScheme="cyan">Submit</Button> 
 
             </ScrollView>
