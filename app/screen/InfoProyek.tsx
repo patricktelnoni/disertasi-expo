@@ -11,8 +11,6 @@ import {Button, NativeBaseProvider} from 'native-base';
 import {router} from 'expo-router';
 import { CustomForm } from './CustomForm';
 
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -65,8 +63,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
 const FormProyekScreen = () => {
   const [namaPaket, setNamaPaket] = useState('');
   const [namaPpk, setNamaPpk] = useState('');
@@ -75,35 +71,28 @@ const FormProyekScreen = () => {
   const [nomorKontrak, setNomorKontrak] = useState('');
   const [masaPelaksanaan, setMasaPelaksanaan] = useState('');
   const [lokasiPekerjaan, setLokasiPekerjaan] = useState('');
+  const [jumlahPekerjaan, setJumlahPekerjaan] = useState('');
   const [tanggalPho, setTanggalPho] = useState('2024-05-28');
   const [tanggalKontrak, setTanggalKontrak] = useState('2024-05-29');
-  const [modalVisible, setModalVisible] = useState(false);
+  
  
   const kirimData = () => {
-    var data = new FormData();
-    data.append('nama_paket', namaPaket); 
-    data.append('nama_ppk', namaPpk);
-    data.append('nama_satker', namaSatker);
-    data.append('nilai_kontrak', nilaiKontrak);
-    data.append('nomor_kontrak', nomorKontrak);
-    data.append('masa_pelaksanaan', masaPelaksanaan);
-    data.append('tanggal_pho', tanggalPho);
-    data.append('tanggal_kontrak', tanggalKontrak);
-    data.append('lokasi_pekerjaan', lokasiPekerjaan);
+    //var data = new FormData();
+    const data: string[] = [];
+    data.push('nama_paket', namaPaket); 
+    data.push('nama_ppk', namaPpk);
+    data.push('nama_satker', namaSatker);
+    data.push('nilai_kontrak', nilaiKontrak);
+    data.push('nomor_kontrak', nomorKontrak);
+    data.push('masa_pelaksanaan', masaPelaksanaan);
+    data.push('tanggal_pho', tanggalPho);
+    data.push('tanggal_kontrak', tanggalKontrak);
+    data.push('lokasi_pekerjaan', lokasiPekerjaan);
     
     //console.log('Data:', data);
-    fetch('https://palugada.me/api/info_proyek/', {
-      method: 'POST',
-      body: data,
-    }).then((response) => {
-      console.log('Response:',response);
-      if(response.status == 200){
-        setModalVisible(true);
-      }
-    }).
-    catch((error) => {
-      console.error('Error:', error);
-    });
+
+    router.push({pathname:'/screen/ItemPekerjaan', params: {jumlahItem: jumlahPekerjaan, formData: data}});
+    
   }
 
   const pindahListProyek = () => {
@@ -120,25 +109,7 @@ const FormProyekScreen = () => {
           styles.container,
           
         ]}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Data berhasil tersimpan!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={pindahListProyek}>
-                <Text style={styles.textStyle}>Ok</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+        
 
         <View style={{flex: 0}}>
           <Text>Form tambah proyek</Text>
@@ -186,6 +157,12 @@ const FormProyekScreen = () => {
               errorMessage='Lokasi Pekerjaan harus diisi'
               value={lokasiPekerjaan}
               onChangeText={setLokasiPekerjaan}/>
+
+            <CustomForm 
+              label='Jumlah Pekerjaan' 
+              errorMessage='Jumlah Pekerjaan harus diisi'
+              value={jumlahPekerjaan}
+              onChangeText={setJumlahPekerjaan}/>
 
             <Button onPress={kirimData} colorScheme="cyan">Submit</Button> 
 

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
-import { VStack, HStack, Divider, FormControl, NativeBaseProvider } from 'native-base';
+import { VStack, HStack, Box, Divider, FormControl, NativeBaseProvider } from 'native-base';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 const DetailProyek: React.FC = () => {
     const [data, setData] = useState<any>(null);
@@ -9,9 +10,12 @@ const DetailProyek: React.FC = () => {
 
     const CustomDisplay = ({label, data}) => {
         return (
-            <VStack space={2} divider={<Divider />} style={{marginLeft:'3%'}}>
-                <FormControl.Label _text={{bold: true}}>{label}</FormControl.Label>
-                <Text>{data}</Text>
+            <VStack space={2}style={{marginLeft:'3%'}}>
+                <Box>
+                    <FormControl.Label _text={{bold: true}}>{label}</FormControl.Label>
+                    <Text>{data}</Text>
+                </Box>
+                <Divider/>
             </VStack>
         );
     }
@@ -49,7 +53,10 @@ const DetailProyek: React.FC = () => {
                 <CustomDisplay label="Nama Satker" data={data.nama_satker} />
                 <CustomDisplay label="Nama PPK" data={data.nama_ppk} />
                 <CustomDisplay label="Nilai Kontrak" data={data.nilai_kontrak} />
-                <CustomDisplay label="Lokasi Pekerjaan" data={data.lokasi_pekerjaan} />
+                <View>
+                    <FontAwesome6 name="map-location" size={24} color="black" />
+                    <CustomDisplay label="Lokasi Pekerjaan" data={data.lokasi_pekerjaan} />
+                </View>
                 <CustomDisplay label="Tanggal PHO" data={data.tanggal_pho} />
                 <CustomDisplay label="Tanggal Kontrak" data={data.tanggal_kontrak} />
    
