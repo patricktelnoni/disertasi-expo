@@ -94,7 +94,19 @@ const FormProyekScreen = () => {
     
     //console.log('Data:', data);
 
-    router.push({pathname:'/screen/ItemPekerjaan', params: {jumlahItem: jumlahPekerjaan, formData: JSON.stringify(data)}});
+    router.push({pathname:'/screen/ItemPekerjaan', params: {
+          jumlahItem: jumlahPekerjaan, 
+          namaPaket: namaPaket, 
+          namaSatker: namaSatker, 
+          namaPpk: namaPpk, 
+          nilaiKontrak: nilaiKontrak, 
+          nomorKontrak: nomorKontrak, 
+          tanggalPho: tanggalPho, 
+          masaPelaksanaan: masaPelaksanaan, 
+          lokasiPekerjaan: lokasiPekerjaan,
+          tanggalKontrak: tanggalKontrak, 
+
+    }});
     
   }
 

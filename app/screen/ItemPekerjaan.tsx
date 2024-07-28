@@ -74,24 +74,40 @@ const ItemPekerjaan = () => {
 
     let arr = [];
 
-    const handleFinish = () => {
-      const url    = 'https://palugada.me/api/info_proyek/'+params.id+'';
+    const handleFinish = async () => {
+      const url    = 'https://palugada.me/api/info_proyek/';
+      //const url    = 'http://192.168.0.9:8000/api/info_proyek/';
       let dataKirim = new FormData();
-      let itemPekerjaan = [];
-      namaItemPekerjaan.map((item, index) => {
-        itemPekerjaan.push({
-          nama_item_pekerjaan : item,
-          volume_pekerjaan    : volumePekerjaan[index],
-          satuan_pekerjaan    : satuanPekerjaan[index],
-          harga_satuan        : hargaSatuan[index]
-        });
-      });
-      dataKirim.append('item_pekerjaan', JSON.stringify(itemPekerjaan));
-      dataKirim.append('data', params.formData);
+      //const itemPekerjaan = [];
+      
+      dataKirim.append('nama_pekerjaan', JSON.stringify(namaItemPekerjaan));
+      dataKirim.append('volume_pekerjaan', JSON.stringify(volumePekerjaan));
+      dataKirim.append('satuan_pekerjaan', JSON.stringify(satuanPekerjaan));
+      dataKirim.append('harga_satuan', JSON.stringify(hargaSatuan));
+      //dataKirim.append('item_pekerjaan[]', itemPekerjaan);
+      dataKirim.append('nama_paket', params.namaPaket);
+      dataKirim.append('nama_ppk', params.namaPpk);
+      dataKirim.append('nilai_kontrak', params.nilaiKontrak);
+      dataKirim.append('nama_satker', params.namaSatker);
+      dataKirim.append('masa_pelaksanaan', params.masaPelaksanaan);
+      dataKirim.append('nomor_kontrak', params.nomorKontrak);
+      dataKirim.append('tanggal_kontrak', params.tanggalKontrak);
+      dataKirim.append('tanggal_pho', params.tanggalPho);
+      dataKirim.append('lokasi_pekerjaan', params.lokasiPekerjaan);
+
       console.log(dataKirim);
+      fetch(
+        url, 
+        {
+          method: 'POST',
+          body: dataKirim,
+        }
+      ).then((response) => console.log(response))
+      .catch((error) => console.error(error));
     }
     for (let index = 0; index < Number(params.jumlahItem); index++) {
-      arr.push(<ProgressStep key={index+1}
+      arr.push(
+      <ProgressStep key={index+1}
         onSubmit={handleFinish}>
         <Text>Item Pekerjaan {index+1}</Text>
         
