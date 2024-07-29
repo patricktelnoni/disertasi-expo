@@ -5,34 +5,36 @@ import { MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomForm } from './CustomForm';
-import { NativeBaseProvider, Button, FormControl } from 'native-base';
+import { Select, CheckIcon, NativeBaseProvider, Button, FormControl } from 'native-base';
 
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
-import { router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function FormKesiapanLahan() {
-    const [facing, setFacing] = useState('back');
-    const [permission, requestPermission] = useCameraPermissions();
+    const params = useLocalSearchParams();
+
+    const [facing, setFacing]                 = useState('back');
+    const [permission, requestPermission]     = useCameraPermissions();
     const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     
-    const [lokasiCuacaAmp, setLokasiCuacaAmp] = useState(null);
+    const [lokasiCuacaAmp, setLokasiCuacaAmp]                   = useState(null);
     const [lokasiCuacaPenghamparan, setLokasiCuacaPenghamparan] = useState(null);
 
-    const [cameraCuacaAmpOn, setCameraCuacaAmpOn] = useState(false);
-    const [cameraCuacaLahanOn, setCameraCuacaLahanOn] = useState(false);
+    const [cameraCuacaAmpOn, setCameraCuacaAmpOn]         = useState(false);
+    const [cameraCuacaLahanOn, setCameraCuacaLahanOn]     = useState(false);
     const [cameraKondisiLahanOn, setCameraKondisiLahanOn] = useState(false);
 
-    const [previewCuacaAmpAvailable, setPreviewCuacaAmpAvailable] = useState(false)
-    const [previewCuacaLahanAvailable, setPreviewCuacaLahanAvailable] = useState(false)
+    const [previewCuacaAmpAvailable, setPreviewCuacaAmpAvailable]         = useState(false)
+    const [previewCuacaLahanAvailable, setPreviewCuacaLahanAvailable]     = useState(false)
     const [previewKondisiLahanAvailable, setPreviewKondisiLahanAvailable] = useState(false)
 
-    const [capturedCuacaAmpImage, setCapturedCuacaAmpImage] = useState<any>(null)
-    const [capturedCuacaPenghamparanImage, setCapturedCuacaPenghamparanImage] = useState<any>(null)
+    const [capturedCuacaAmpImage, setCapturedCuacaAmpImage]                       = useState<any>(null)
+    const [capturedCuacaPenghamparanImage, setCapturedCuacaPenghamparanImage]     = useState<any>(null)
     const [capturedKondisiPenghamparanImage, setCapturedKondisiPenghamparanImage] = useState<any>(null)
 
-    const [cuacaLokasiAmp, setCuacaLokasiAmp] = useState('');
-    const [cuacaLahanPenghamparan, setCuacaLahanPenghamparan] = useState('');
+    const [cuacaLokasiAmp, setCuacaLokasiAmp]                     = useState('');
+    const [cuacaLahanPenghamparan, setCuacaLahanPenghamparan]     = useState('');
     const [kondisiLahanPenghamparan, setKondisiLahanPenghamparan] = useState('');
 
     const [keterangan, setKeterangan] = useState('');
@@ -41,7 +43,28 @@ export default function FormKesiapanLahan() {
     const cameraCuacaLahanRef   = Camera;
     const cameraKondisiLahanRef = Camera;
 
+    const [itemPekerjaanList, setItemPekerjaanList] = useState([]);
+    const [pekerjaanId, setPekerjaanId] = useState('');
+    let proyek_id = params.id;
+
+    const fetchData = async () => {
+      
+      try {
+          //const response = await fetch('http://192.168.0.9:8000/api/item_pekerjaan/'+proyek_id+'');
+          const response = await fetch('https://palugada.me/api/item_pekerjaan/'+proyek_id+'');
+          const jsonData = await response.json();
+          setItemPekerjaanList(jsonData.data);
+          //console.log(jsonData.data);
+      } catch (error) {
+          console.error(error);
+      }
+    };
+
     useEffect(() => {
+      console.log('useEffect');
+      
+      console.log(proyek_id);
+      fetchData();
       (async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if(status !== 'granted'){
@@ -49,7 +72,8 @@ export default function FormKesiapanLahan() {
           return;
         }
       })(); 
-    });
+
+    }, []);
       
  
     if (!permission) {
@@ -70,7 +94,7 @@ export default function FormKesiapanLahan() {
     const kirimData = async () => {
       const data = new FormData();
 
-      let titikCuacaAmp = lokasiCuacaAmp.coords.latitude + "," + lokasiCuacaAmp.coords.longitude;
+      let titikCuacaAmp   = lokasiCuacaAmp.coords.latitude + "," + lokasiCuacaAmp.coords.longitude;
       let titikCuacaLahan = lokasiCuacaPenghamparan.coords.latitude + "," + lokasiCuacaPenghamparan.coords.longitude;
 
       const fileNameCuacaAmp = capturedCuacaAmpImage.split('/').pop();
@@ -119,6 +143,7 @@ export default function FormKesiapanLahan() {
         console.error('Error:', error);
       });
     }
+
     function toggleCameraFacing() {
       setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
@@ -204,7 +229,23 @@ export default function FormKesiapanLahan() {
     <NativeBaseProvider>
     <SafeAreaView style={styles.container}>
     <ScrollView>
-      
+        <Select selectedValue={pekerjaanId} 
+                minWidth="200" 
+                maxW="300px"
+                accessibilityLabel="Pilih Jumlah Pekerjaan" 
+                placeholder="Pilih Jumlah Pekerjaan" 
+                _selectedItem={{
+                    bg: "teal.600",
+                    endIcon: <CheckIcon size="3" />
+                }} mt={1} 
+                onValueChange={itemValue => setPekerjaanId(itemValue)}>
+
+                    {
+                      itemPekerjaanList.map((item) => {
+                        return <Select.Item label={item.nama_item_pekerjaan} value={item.id} />
+                      })
+                    }
+            </Select>
       <CustomForm 
         label="Keterangan" 
         onChangeText={setKeterangan} 

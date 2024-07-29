@@ -15,7 +15,7 @@ const ListProyek = () => {
 
     const fetchData = async () => {
         try {
-            //const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+            //const response = await fetch('http://192.168.0.9:8000/api/info_proyek/');
             const response = await fetch('https://palugada.me/api/info_proyek/');
             const jsonData = await response.json();
             //console.log(jsonData.data);
@@ -25,8 +25,12 @@ const ListProyek = () => {
         }
     };
 
-    const getDetail = (id) => {
-        router.push({pathname:'/screen/DetailProyek', params: {id: id}});
+    const dimensiProyek = (id) => {
+        router.push({pathname:'/screen/FormDimensiProyek', params: {id: id}});
+    }
+
+    const kesiapanLahan = (id) => {
+        router.push({pathname:'/screen/FormKesiapanLahan', params: {id: id}});
     }
 
     const renderItem = ({ item }) => (
@@ -43,14 +47,14 @@ const ListProyek = () => {
                 </Box>
                 <Box px="4" pb="4">
                     <HStack space={2}>
-                        <TouchableWithoutFeedback onPress={() => getDetail(item.id)}> 
+                        <TouchableWithoutFeedback onPress={() => dimensiProyek(item.id)}> 
                             <View style={styles.detailButton}>
                                 <FontAwesome5 name="ruler" size={16} color="white" style={styles.buttonText}>
                                     <Text style={{fontFamily:"arial"}}>Dimensi Proyek</Text>
                                 </FontAwesome5>
                             </View>
                         </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={() => getDetail(item.id)}>
+                        <TouchableWithoutFeedback onPress={() => kesiapanLahan(item.id)}>
                             <View style={styles.detailButton}>
                                 <FontAwesome5 name="check" size={16} color="white" style={styles.buttonText}>
                                     <Text style={{fontFamily:"arial"}}>Kesiapan Lahan</Text>

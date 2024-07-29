@@ -6,7 +6,8 @@ import Feather from '@expo/vector-icons/Feather';
 
 import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
-import { router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+
 
 export default function App() {
     const [facing, setFacing] = useState('back');
@@ -18,7 +19,6 @@ export default function App() {
     const [capturedImage, setCapturedImage] = useState<any>(null)
     const [isCameraReady, setIsCameraReady] = useState(false);
     const [cuacaLokasiAmp, setCuacaLokasiAmp] = useState('');
-
 
     const cameraRef = Camera;
 
@@ -64,8 +64,6 @@ export default function App() {
         name: fileName,
         type: 'image/*'
       } as any);
-
-  
       
       console.log('Path:', capturedImage);
       console.log('data:', data);
