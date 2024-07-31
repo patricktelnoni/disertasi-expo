@@ -54,7 +54,7 @@ export default function App() {
     const fetchData = async () => {
       try {
           //const response = await fetch('http://192.168.0.9:8000/api/item_pekerjaan/'+proyek_id+'');
-          const response = await fetch('https://palugada.me/api/item_pekerjaan/'+proyek_id+'');
+          const response = await fetch('https://palugada.me/api/item_pekerjaan/'+proyek_id+''); 
           const jsonData = await response.json();
           setItemPekerjaanList(jsonData.data);
           //console.log(jsonData.data);
@@ -104,12 +104,12 @@ export default function App() {
       //const fileType = fileName.split('.').pop();
 
       data.append('peruntukan', 'Proyek kaka ee');
-      
+    
       data.append('panjang_pekerjaan', panjangPekerjaan);
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
-      data.append('id_proyek', pekerjaanId);
-
+      data.append('id_item_pekerjaan', pekerjaanId);
+      data.append('id_proyek', params.id);
       data.append('lokasi_foto_panjang',titikPanjang);
       data.append('lokasi_foto_lebar',titikLebar);
       data.append('lokasi_foto_tebal',titikTebal);

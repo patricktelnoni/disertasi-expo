@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import {HStack, Box, NativeBaseProvider, VStack, Divider} from 'native-base';
+import {HStack, Box, NativeBaseProvider, VStack, Divider, Progress} from 'native-base';
 import { Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
@@ -44,6 +44,10 @@ const ListProyek = () => {
                     <Text>{item.nomor_kontrak}</Text>
                     <Text>{item.lokasi_pekerjaan}</Text>
                     <Text>{item.nama_ppk}</Text>
+                </Box>
+                <Box w="90%" maxW="400" px="4">
+                    <Text>Progress: {item.persentase_progress}</Text>
+                    <Progress size="md" value={item.persentase_progress} mx="4" />
                 </Box>
                 <Box px="4" pb="4">
                     <HStack space={2}>
