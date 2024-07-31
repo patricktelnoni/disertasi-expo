@@ -108,6 +108,7 @@ export default function App() {
       data.append('panjang_pekerjaan', panjangPekerjaan);
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
+      data.append('id_proyek', pekerjaanId);
 
       data.append('lokasi_foto_panjang',titikPanjang);
       data.append('lokasi_foto_lebar',titikLebar);
@@ -256,8 +257,8 @@ export default function App() {
         <Select selectedValue={pekerjaanId} 
                 minWidth="200" 
                 maxW="300px"
-                accessibilityLabel="Pilih Jumlah Pekerjaan" 
-                placeholder="Pilih Jumlah Pekerjaan" 
+                accessibilityLabel="Pilih Item Pekerjaan" 
+                placeholder="Pilih Item Pekerjaan" 
                 _selectedItem={{
                     bg: "teal.600",
                     endIcon: <CheckIcon size="3" />
