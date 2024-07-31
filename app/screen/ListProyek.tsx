@@ -47,7 +47,7 @@ const ListProyek = () => {
                 </Box>
                 <Box w="90%" maxW="400" px="4">
                     <Text>Progress: {item.persentase_progress}</Text>
-                    <Progress size="md" value={item.persentase_progress} mx="4" />
+                    <Progress size="lg" value={item.persentase_progress} mx="4" />
                 </Box>
                 <Box px="4" pb="4">
                     <HStack space={2}>
