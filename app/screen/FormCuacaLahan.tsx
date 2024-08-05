@@ -4,7 +4,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } fr
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 
-import * as MediaLibrary from'expo-media-library';
+
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import axios from 'axios';
@@ -12,7 +12,7 @@ import axios from 'axios';
 export default function App() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
-    const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
+
     const [titikLokasi, setTitikLokasi] = useState(null);
     const [cameraOff, setCameraOff] = useState(null);
     const [previewAvailable, setPreviewAvailable] = useState(false)

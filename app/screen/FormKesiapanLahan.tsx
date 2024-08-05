@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CustomForm } from './CustomForm';
 import { Select, CheckIcon, NativeBaseProvider, Button, FormControl } from 'native-base';
 
-import * as MediaLibrary from'expo-media-library';
+
 import * as Location from 'expo-location';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -16,7 +16,6 @@ export default function FormKesiapanLahan() {
 
     const [facing, setFacing]                 = useState('back');
     const [permission, requestPermission]     = useCameraPermissions();
-    const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     
     const [lokasiCuacaAmp, setLokasiCuacaAmp]                   = useState(null);
     const [lokasiCuacaPenghamparan, setLokasiCuacaPenghamparan] = useState(null);

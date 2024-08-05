@@ -4,7 +4,6 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } fr
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 
-import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
 import { useLocalSearchParams } from 'expo-router';
 
@@ -12,7 +11,6 @@ import { useLocalSearchParams } from 'expo-router';
 export default function App() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
-    const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     const [titikLokasi, setTitikLokasi] = useState(null);
     const [cameraOff, setCameraOff] = useState(null);
     const [previewAvailable, setPreviewAvailable] = useState(false)

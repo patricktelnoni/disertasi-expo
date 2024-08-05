@@ -15,7 +15,6 @@ import LaporanDimensiPekerjaanScreen from "./screen/kontraktor/LaporanDimensiPek
 import CameraView from "./screen/kontraktor/TestCameraScreen.tsx";
 import LaporanKesiapanLahanScreen from "./screen/kontraktor/LaporanKesiapanLahan.tsx";
 
-
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -42,18 +41,20 @@ export default function DrawerNav() {
 const App = () => {
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={DrawerNav} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Proyeklist" component={DrawerNav} />
-        <Stack.Screen name="FormProyek" component={FormProyekScreen} />
-        <Stack.Screen name="ProyekDetail" component={ProyekDetailScreen} />
+ 
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={DrawerNav} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Proyeklist" component={DrawerNav} />
+          <Stack.Screen name="FormProyek" component={FormProyekScreen} />
+          <Stack.Screen name="ProyekDetail" component={ProyekDetailScreen} />
 
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+
 
   );
 }

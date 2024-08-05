@@ -19,16 +19,13 @@ export default function App() {
 
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
-    const [savePermission, setSavePermission] = MediaLibrary.usePermissions();
     
     const [titikLokasiPanjang, setTitikLokasiPanjang] = useState(null);
     const [titikLokasiLebar, setTitikLokasiLebar] = useState(null);
     const [titikLokasiTebal, setTitikLokasiTebal] = useState(null);
-    
-    const [cameraPanjangOn, setCameraPanjangOn] = useState(false);
-    const [cameraLebarOn, setCameraLebarOn] = useState(false);
-    const [cameraTebalOn, setCameraTebalOn] = useState(false);
-    
+       
+    const [cameraOn, setCameraOn] = useState(false);
+
     const [previewPanjangAvailable, setPreviewPanjangAvailable] = useState(false)
     const [previewLebarAvailable, setPreviewLebarAvailable] = useState(false);
     const [previewTebalAvailable, setPreviewTebalAvailable] = useState(false);
@@ -36,20 +33,18 @@ export default function App() {
     const [capturedPanjangImage, setCapturedPanjangImage] = useState<any>(null)
     const [capturedLebarImage, setCapturedLebarImage] = useState<any>(null)
     const [capturedTebalImage, setCapturedTebalImage] = useState<any>(null)
-    
-    const [isCameraReady, setIsCameraReady] = useState(false);
+
+    const [tipeGambar, setTipeGambar] = useState('');
 
     const [panjangPekerjaan, setPanjangPekerjaan] = useState('');
     const [lebarPekerjaan, setLebarPekerjaan] = useState('');
     const [tebalPekerjaan, setTebalPekerjaan] = useState('');
 
-    const cameraPanjangRef  = Camera;
-    const cameraLebarRef    = Camera;
-    const cameraTebalRef    = Camera;
-
     const [itemPekerjaanList, setItemPekerjaanList] = useState([]);
     const [pekerjaanId, setPekerjaanId] = useState('');
     let proyek_id = params.id;
+    let location = null;
+    const cameraRef = Camera;
 
     const fetchData = async () => {
       try {
@@ -63,16 +58,20 @@ export default function App() {
       }
     };
 
+    const getLocationPermission = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if(status !== 'granted'){
+        console.log('Permission to access location was denied');
+        return;
+      }
+      location = await Location.getCurrentPositionAsync();
+      
+    }
+
     useEffect(() => {
       fetchData();
-      (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if(status !== 'granted'){
-          console.log('Permission to access location was denied');
-          return;
-        }
-        
-      })(); 
+      getLocationPermission();
+      
     });
       
  
@@ -84,32 +83,31 @@ export default function App() {
     if (!permission.granted) {
         // Camera permissions are not granted yet.
         return (
-        <View style={styles.container}>
-            <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-            <Button onPress={requestPermission} title="grant permission" />
-        </View>
+          <View style={styles.container}>
+              <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
+              <Button onPress={requestPermission} title="grant permission" />
+          </View>
         );
     }
 
     const kirimData = async () => {
+      
       const data = new FormData();
-
+      console.log('um dolo kaka sayang eee');
       let titikPanjang  = titikLokasiPanjang.coords.latitude + "," + titikLokasiPanjang.coords.longitude;
       let titikLebar    = titikLokasiLebar.coords.latitude + "," + titikLokasiLebar.coords.longitude;
       let titikTebal    = titikLokasiTebal.coords.latitude + "," + titikLokasiTebal.coords.longitude;
       
       const fileNamePanjang = capturedPanjangImage.split('/').pop();
       const fileNameLebar   = capturedLebarImage.split('/').pop();
-      const fileNameTebal   = capturedTebalImage.split('/').pop();
-      //const fileType = fileName.split('.').pop();
+      const fileNameTebal   = capturedTebalImage.split('/').pop();   
+      console.log(fileNameLebar);
 
-      data.append('peruntukan', 'Proyek kaka ee');
-    
       data.append('panjang_pekerjaan', panjangPekerjaan);
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
       data.append('id_item_pekerjaan', pekerjaanId);
-      data.append('id_proyek', params.id);
+      //data.append('id_proyek', params.id);
       data.append('lokasi_foto_panjang',titikPanjang);
       data.append('lokasi_foto_lebar',titikLebar);
       data.append('lokasi_foto_tebal',titikTebal);
@@ -157,46 +155,37 @@ export default function App() {
         setFacing(current => (current === 'back' ? 'front' : 'back'));
     }
 
-    const __savePhoto = async (photo, type) => {
-        if (savePermission?.status !== 'granted') {
-        await MediaLibrary.requestPermissionsAsync();
-        <Button title="Give Permission" onPress={setSavePermission} />
-        
-        } else {
-        const asset = await MediaLibrary.createAssetAsync(photo);
-        MediaLibrary.createAlbumAsync('Expo', asset)
-            .then(() => {
-                if(type === 'panjang'){
-                    setCapturedPanjangImage(asset.uri);
-                    setPreviewPanjangAvailable(true);
-                }
-                else if(type === 'lebar'){
-                    setCapturedLebarImage(asset.uri);
-                    setPreviewLebarAvailable(true);
-                }
-                else{
-                    setCapturedTebalImage(asset.uri);
-                    setPreviewTebalAvailable(true);
-                }
-                
-            //router.push({pathname:'/screen/Preview', params: {gambar: asset.uri}});
-            })
-            .catch(error => {
-            console.error('err', error);
-            }); 
-        }
+    const startCamera = (tipe) => {
+      cameraOn === false ? setCameraOn(true) : setCameraOn(false);
+      setTipeGambar(tipe);
     }
 
-    const startCameraPanjang = () => {
-        cameraPanjangOn === false ? setCameraPanjangOn(true) : setCameraPanjangOn(false);
-    }
+    const __takePicture = async () => {
 
-    const startCameraLebar = () => {
-        cameraLebarOn === false ? setCameraLebarOn(true) : setCameraLebarOn(false);
-    }
-
-    const startCameraTebal = () => {
-        cameraTebalOn === false ? setCameraTebalOn(true) : setCameraTebalOn(false);
+      if (cameraRef) {
+          const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
+          await cameraRef.current.takePictureAsync(options)
+          .then((data) => {
+            setCameraOn(false);
+            if(tipeGambar == 'panjang'){
+              setCapturedPanjangImage(data.uri);
+              setPreviewPanjangAvailable(true);
+              setTitikLokasiPanjang(location);
+            }
+            if(tipeGambar == 'lebar'){
+              setCapturedLebarImage(data.uri);
+              setPreviewLebarAvailable(true);
+              setTitikLokasiLebar(location);
+            }
+            if(tipeGambar == 'tebal'){
+              setCapturedTebalImage(data.uri);
+              setPreviewTebalAvailable(true);
+              setTitikLokasiTebal(location);
+            }
+          });
+          
+      }
+      
     }
 
     const __setLocation = async(type) => {
@@ -208,38 +197,6 @@ export default function App() {
 
     }
 
-    const __takePicture = async (type) => {
-        const options = { quality:0.5, base64: true, skipProcessing: false, isImageMirror: false};
-        if(type === 'panjang'){
-            await cameraPanjangRef.current.takePictureAsync(options)
-                .then((data) => {
-                    setCameraPanjangOn(false);
-                    __setLocation('panjang');
-                    __savePhoto(data.uri, 'panjang');
-                });
-        }
-        else if(type === 'lebar'){
-            await cameraLebarRef.current.takePictureAsync(options)
-                .then((data) => {
-                    setCameraLebarOn(false);
-                    __setLocation('lebar');
-                    __savePhoto(data.uri, 'lebar');
-                });
-        }
-        else{
-            await cameraTebalRef.current.takePictureAsync(options)
-                .then((data) => {
-                    setCameraTebalOn(false);
-                    __setLocation('tebal');
-                    __savePhoto(data.uri, 'tebal');
-                });
-            }
-    }
-
-    const takePicturePanjang  = () => {__takePicture('panjang');}
-    const takePictureLebar    = () => {__takePicture('lebar');}
-    const takePictureTebal    = () => {__takePicture('tebal');}
-
     const __retakePicture = () => {
         setCapturedPanjangImage(null);
         setPreviewPanjangAvailable(false);
@@ -247,7 +204,20 @@ export default function App() {
 
   return (
     <NativeBaseProvider>
-      <View
+      { 
+        cameraOn ?
+          <View style={{flex: 1}}>
+                <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraRef}>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={styles.button} >
+                            <Feather name="circle" size={56} color="white" onPress={__takePicture} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
+                            <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                </CameraView>
+          </View>: <View
         style={[
           styles.container,
           
@@ -285,26 +255,13 @@ export default function App() {
             <Text>Preview</Text>
                 <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />
                 <View>
-            <Button title="Take photo back" onPress={__retakePicture} />
+            
             </View> 
             
             </View>
           : <>{
-            cameraPanjangOn ?   
-            <View style={styles.container}>
-                <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraPanjangRef}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} >
-                            <Feather name="circle" size={56} color="white" onPress={takePicturePanjang} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                            <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </CameraView>
-            </View>:
             <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={startCameraPanjang} /> 
+              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('panjang')} /> 
             </View>
             }</>
         }
@@ -328,21 +285,9 @@ export default function App() {
             
             </View>
           : <>{
-            cameraLebarOn ?   
-            <View style={styles.container}>
-                <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraLebarRef}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} >
-                            <Feather name="circle" size={56} color="white" onPress={takePictureLebar} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                            <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </CameraView>
-            </View>:
+  
             <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={startCameraLebar} /> 
+              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('lebar')} /> 
             </View>
            
             }</>
@@ -367,21 +312,8 @@ export default function App() {
             
             </View>
           : <>{
-            cameraTebalOn ?   
-            <View style={styles.container}>
-                <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraTebalRef}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} >
-                            <Feather name="circle" size={56} color="white" onPress={takePictureTebal} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                            <MaterialCommunityIcons name="camera-flip" size={56} color="white" />
-                        </TouchableOpacity>
-                    </View>
-                </CameraView>
-            </View>:
             <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={startCameraTebal} /> 
+              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('tebal')} /> 
             </View>
             }</>
         }
@@ -389,6 +321,10 @@ export default function App() {
       </ScrollView>
     </SafeAreaView>
     </View>
+      
+      }
+      
+      
     </NativeBaseProvider>
     
   );

@@ -5,6 +5,7 @@ import {
     StyleSheet,
     Modal, 
     Pressable, 
+    ActivityIndicator
 } from 'react-native';
 import { CustomForm } from './CustomForm';
 import {Text, View, TextInput} from 'react-native';
@@ -66,6 +67,7 @@ const styles = StyleSheet.create({
 const ItemPekerjaan = () => {
     const params = useLocalSearchParams();
     
+    const [isLoading, setIsLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false); 
     const [volumePekerjaan, setVolumePekerjaan] = useState([]);
     const [satuanPekerjaan, setSatuanPekerjaan] = useState([]);
@@ -77,6 +79,7 @@ const ItemPekerjaan = () => {
     const handleFinish = async () => {
       const url    = 'https://palugada.me/api/info_proyek/';
       //const url    = 'http://192.168.0.9:8000/api/info_proyek/';
+      setIsLoading(true);
       let dataKirim = new FormData();
       //const itemPekerjaan = [];
       
@@ -95,14 +98,21 @@ const ItemPekerjaan = () => {
       dataKirim.append('tanggal_pho', params.tanggalPho);
       dataKirim.append('lokasi_pekerjaan', params.lokasiPekerjaan);
 
-      console.log(dataKirim);
       fetch(
         url, 
         {
           method: 'POST',
           body: dataKirim,
         }
-      ).then((response) => console.log(response))
+      ).then(
+        (response) => {
+          console.log(response)
+          if(response.status === 201){
+            alert('Data berhasil disimpan');
+            setIsLoading(false);
+          } 
+        }
+      )
       .catch((error) => console.error(error));
     }
     for (let index = 0; index < Number(params.jumlahItem); index++) {
@@ -158,6 +168,7 @@ const ItemPekerjaan = () => {
   
     return (
         <NativeBaseProvider>
+          <ActivityIndicator animating={isLoading} />
             <View style={{flex: 1}}>
                 <Modal
                     animationType="slide"
