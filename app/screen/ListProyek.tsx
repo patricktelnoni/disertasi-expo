@@ -33,6 +33,16 @@ const ListProyek = () => {
         router.push({pathname:'/screen/FormKesiapanLahan', params: {id: id}});
     }
 
+    const detailProgress = (id, nama_paket, nomor_kontrak) => {
+        router.push({pathname:'/screen/DetailProgressProyek', 
+            params: {
+                id: id, 
+                nama_paket: nama_paket, 
+                nomor_kontrak: nomor_kontrak
+            }
+        });
+    }
+
     const renderItem = ({ item }) => (
         <Box border="1" borderRadius="md">
             <VStack space="4" >
@@ -46,12 +56,18 @@ const ListProyek = () => {
                     <Text>{item.nama_ppk}</Text>
                 </Box>
                 <Box w="90%" maxW="400" px="4">
-                    <Text>Progress: {item.persentase_progress}</Text>
-                    <Progress size="lg" value={item.persentase_progress} mx="4" />
+                    
+                    <TouchableWithoutFeedback onPress={() => detailProgress(item.id, item.nama_paket, item.nomor_kontrak)}>
+                        <View>
+                            <Text>Progress: {item.persentase_progress}</Text>
+                            <Progress size="lg" value={item.persentase_progress} mx="4" />
+                        </View>
+                    </TouchableWithoutFeedback>
+                  
                 </Box>
                 <Box px="4" pb="4">
                     <HStack space={2}>
-                        <TouchableWithoutFeedback onPress={() => dimensiProyek(item.id)}> 
+                        <TouchableWithoutFeedback onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}> 
                             <View style={styles.detailButton}>
                                 <FontAwesome5 name="ruler" size={16} color="white" style={styles.buttonText}>
                                     <Text style={{fontFamily:"arial"}}>Dimensi Proyek</Text>

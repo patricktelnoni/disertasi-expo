@@ -1,12 +1,11 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { NativeBaseProvider, Button, FormControl, Select, CheckIcon } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { CustomForm } from './CustomForm';
 
-import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
@@ -25,6 +24,7 @@ export default function App() {
     const [titikLokasiTebal, setTitikLokasiTebal] = useState(null);
        
     const [cameraOn, setCameraOn] = useState(false);
+    const [isSending, setIsSending] = useState(false);
 
     const [previewPanjangAvailable, setPreviewPanjangAvailable] = useState(false)
     const [previewLebarAvailable, setPreviewLebarAvailable] = useState(false);
@@ -65,7 +65,7 @@ export default function App() {
         return;
       }
       location = await Location.getCurrentPositionAsync();
-      
+      //location = await Location.getLastKnownPositionAsync();
     }
 
     useEffect(() => {
@@ -92,6 +92,7 @@ export default function App() {
 
     const kirimData = async () => {
       
+      setIsSending(true);
       const data = new FormData();
       console.log('um dolo kaka sayang eee');
       let titikPanjang  = titikLokasiPanjang.coords.latitude + "," + titikLokasiPanjang.coords.longitude;
@@ -103,6 +104,7 @@ export default function App() {
       const fileNameTebal   = capturedTebalImage.split('/').pop();   
       console.log(fileNameLebar);
 
+      data.append('proyek_id', proyek_id);
       data.append('panjang_pekerjaan', panjangPekerjaan);
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
@@ -134,6 +136,7 @@ export default function App() {
       
       axios.post(
         'https://palugada.me/api/dimensi_lahan/', 
+        //'http://192.168.0.7:8000/api/dimensi_lahan/',
         data,
         {
           headers:{
@@ -143,7 +146,10 @@ export default function App() {
       ).then((response) => {
         console.log('Response:',response);
         if(response.status === 201){
+          setIsSending(false);
           alert('Data berhasil disimpan');
+          
+          return router.push({pathname:'/screen/ProyekList'})
         } 
       }).
       catch((error) => {
@@ -217,11 +223,13 @@ export default function App() {
                         </TouchableOpacity>
                     </View>
                 </CameraView>
-          </View>: <View
+          </View>: 
+          <View
         style={[
           styles.container,
           
         ]}>
+           { isSending ? <ActivityIndicator size="large" />: <></>}
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Select selectedValue={pekerjaanId} 
@@ -236,7 +244,7 @@ export default function App() {
                 onValueChange={itemValue => setPekerjaanId(itemValue)}>
                     {
                       itemPekerjaanList.map((item) => {
-                        return <Select.Item label={item.nama_item_pekerjaan} value={item.id} />
+                        return <Select.Item label={item.nama_item_pekerjaan} value={item.id} key={item.id} />
                       })
                     }
             </Select>
