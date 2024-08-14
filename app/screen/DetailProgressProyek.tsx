@@ -7,7 +7,8 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 
 const DetailProgressProyek = () => {
-    const [data, setData] = useState([]);
+    const [data, setData]       = useState([]);
+    const [total, setTotal]     = useState([]);
     const params = useLocalSearchParams();
 
     let proyek_id = params.id;
@@ -25,6 +26,7 @@ const DetailProgressProyek = () => {
             const jsonData = await response.json();
             //console.log(jsonData.data);
             setData(jsonData.data);
+            setTotal(jsonData.total);
         } catch (error) {
             console.error(error);
         }
@@ -56,6 +58,8 @@ const DetailProgressProyek = () => {
             <Box>
                 <Text>Nama Paket : {nama_paket}</Text>
                 <Text>Nomor Kontrak: {nomor_kontrak}</Text>
+                <Text>Total Progress: {total.total_progress}</Text>
+                <Text>Total Biaya: {total.total_biaya}</Text>
                 <FlatList
                     data={data}
                     renderItem={renderItem}

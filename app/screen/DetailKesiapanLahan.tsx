@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
 
 const DetailProyek: React.FC = () => {
-    const [data, setData] = useState<any>(null);
+    const [data, setData]       = useState<any>(null);
+    
     const [loading, setLoading] = useState<boolean>(true);
 
     const params = useGlobalSearchParams<{id: string}>();
@@ -14,7 +15,8 @@ const DetailProyek: React.FC = () => {
             try {
                 const response = await fetch(url);
                 const jsonData = await response.json();
-                setData(jsonData);
+                setData(jsonData.data);
+                setTotal(jsonData.total);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -33,6 +35,9 @@ const DetailProyek: React.FC = () => {
             <Text>Detail Proyek</Text>
             <Text>Proyek Name: {data.title}</Text>
             <Text>Proyek Description: {data.body}</Text>
+            <Text>Total: {total.total_progress}</Text>
+            <Text>Total: {total.total_biaya}</Text>
+
             {/* Render other details here */}
         </View>
     );

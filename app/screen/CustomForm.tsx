@@ -1,5 +1,4 @@
 import {Input, FormControl, VStack} from 'native-base';
-import { useState } from 'react';
 
 export const CustomForm = ({label, errorMessage, value, onChangeText}) => {
     return (

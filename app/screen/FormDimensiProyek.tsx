@@ -9,7 +9,6 @@ import { CustomForm } from './CustomForm';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 import axios from 'axios';
 
@@ -68,48 +67,42 @@ export default function App() {
       //location = await Location.getLastKnownPositionAsync();
     }
 
-    useEffect(() => {
-      fetchData();
-      getLocationPermission();
-      
-    });
-      
- 
-    if (!permission) {
-        // Camera permissions are still loading.
-        return <View />;
+    const getCameraPermission = async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+          console.log('Permission to access camera was denied');
+          return;
+      }
     }
 
-    if (!permission.granted) {
-        // Camera permissions are not granted yet.
-        return (
-          <View style={styles.container}>
-              <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-              <Button onPress={requestPermission} title="grant permission" />
-          </View>
-        );
-    }
+    useEffect(() => {
+      
+      getLocationPermission();
+      getCameraPermission();
+      fetchData();
+    });
+      
 
     const kirimData = async () => {
       
-      setIsSending(true);
       const data = new FormData();
-      console.log('um dolo kaka sayang eee');
+
       let titikPanjang  = titikLokasiPanjang.coords.latitude + "," + titikLokasiPanjang.coords.longitude;
       let titikLebar    = titikLokasiLebar.coords.latitude + "," + titikLokasiLebar.coords.longitude;
       let titikTebal    = titikLokasiTebal.coords.latitude + "," + titikLokasiTebal.coords.longitude;
       
+      console.log(titikPanjang);
       const fileNamePanjang = capturedPanjangImage.split('/').pop();
       const fileNameLebar   = capturedLebarImage.split('/').pop();
       const fileNameTebal   = capturedTebalImage.split('/').pop();   
-      console.log(fileNameLebar);
+
 
       data.append('proyek_id', proyek_id);
       data.append('panjang_pekerjaan', panjangPekerjaan);
       data.append('lebar_pekerjaan', lebarPekerjaan);
       data.append('tebal_pekerjaan', tebalPekerjaan);
       data.append('id_item_pekerjaan', pekerjaanId);
-      //data.append('id_proyek', params.id);
+
       data.append('lokasi_foto_panjang',titikPanjang);
       data.append('lokasi_foto_lebar',titikLebar);
       data.append('lokasi_foto_tebal',titikTebal);
@@ -132,9 +125,10 @@ export default function App() {
         type: 'image/*'
       } as any);
 
-      console.log('data:', data);
-      
-      axios.post(
+      console.log(data);
+      setIsSending(true);
+
+      await axios.post(
         'https://palugada.me/api/dimensi_lahan/', 
         //'http://192.168.0.7:8000/api/dimensi_lahan/',
         data,
@@ -194,15 +188,6 @@ export default function App() {
       
     }
 
-    const __setLocation = async(type) => {
-        let location = await Location.getCurrentPositionAsync();
-
-        if(type === 'panjang') setTitikLokasiPanjang(location);
-        else if(type === 'lebar') setTitikLokasiLebar(location);
-        else setTitikLokasiTebal(location);
-
-    }
-
     const __retakePicture = () => {
         setCapturedPanjangImage(null);
         setPreviewPanjangAvailable(false);
@@ -229,8 +214,8 @@ export default function App() {
           styles.container,
           
         ]}>
-           { isSending ? <ActivityIndicator size="large" />: <></>}
-    <SafeAreaView style={styles.container}>
+          
+    
       <ScrollView>
         <Select selectedValue={pekerjaanId} 
                 minWidth="200" 
@@ -247,11 +232,11 @@ export default function App() {
                         return <Select.Item label={item.nama_item_pekerjaan} value={item.id} key={item.id} />
                       })
                     }
-            </Select>
+        </Select>
 
       <CustomForm 
-        label={'Panjang Pekerjaan'}
-        errorMessage={'Panjang Pekerjaan harus diisi'}
+        label='Panjang Pekerjaan'
+        errorMessage='Panjang Pekerjaan harus diisi'
         value={panjangPekerjaan}
         onChangeText={setPanjangPekerjaan} />
       
@@ -261,11 +246,7 @@ export default function App() {
           previewPanjangAvailable ? 
           <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
-                <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />
-                <View>
-            
-            </View> 
-            
+                <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />       
             </View>
           : <>{
             <View style={styles.cameraIcon}>
@@ -275,8 +256,8 @@ export default function App() {
         }
 
       <CustomForm 
-        label={'Lebar Pekerjaan'}
-        errorMessage={'Lebar Pekerjaan harus diisi'}
+        label='Lebar Pekerjaan'
+        errorMessage='Lebar Pekerjaan harus diisi'
         value={lebarPekerjaan}
         onChangeText={setLebarPekerjaan} />   
 
@@ -287,10 +268,6 @@ export default function App() {
           <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
                 <Image source={{uri: capturedLebarImage}} style={{width: 200, height: 200}} />
-                <View>
-            <Button title="Take photo back" onPress={__retakePicture} />
-            </View> 
-            
             </View>
           : <>{
   
@@ -302,8 +279,8 @@ export default function App() {
         }
 
         <CustomForm 
-          label={'Tebal Pekerjaan'}
-          errorMessage={'Tebal Pekerjaan harus diisi'}
+          label='Tebal Pekerjaan'
+          errorMessage='Tebal Pekerjaan harus diisi'
           value={tebalPekerjaan}
           onChangeText={setTebalPekerjaan} />
 
@@ -313,11 +290,7 @@ export default function App() {
           previewTebalAvailable ? 
           <View style={{marginLeft:"3%"}}>
             <Text>Preview</Text>
-                <Image source={{uri: capturedTebalImage}} style={{width: 200, height: 200}} />
-                <View>
-            <Button title="Take photo back" onPress={__retakePicture} />
-            </View> 
-            
+                <Image source={{uri: capturedTebalImage}} style={{width: 200, height: 200}} />            
             </View>
           : <>{
             <View style={styles.cameraIcon}>
@@ -325,9 +298,9 @@ export default function App() {
             </View>
             }</>
         }
-        <Button colorScheme="cyan" onPress={kirimData} >Submit</Button>
+        <Button colorScheme="cyan" onPress={kirimData} disabled={isSending} width="90%">Submit</Button>
       </ScrollView>
-    </SafeAreaView>
+   
     </View>
       
       }
