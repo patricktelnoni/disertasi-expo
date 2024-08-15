@@ -18,9 +18,9 @@ export default function App() {
     const [facing, setFacing] = useState('back');
     const [permission, requestPermission] = useCameraPermissions();
     
-    const [titikLokasiPanjang, setTitikLokasiPanjang] = useState(null);
-    const [titikLokasiLebar, setTitikLokasiLebar] = useState(null);
-    const [titikLokasiTebal, setTitikLokasiTebal] = useState(null);
+    const [titikLokasiPanjang, setTitikLokasiPanjang] = useState('');
+    const [titikLokasiLebar, setTitikLokasiLebar] = useState('');
+    const [titikLokasiTebal, setTitikLokasiTebal] = useState('');
        
     const [cameraOn, setCameraOn] = useState(false);
     const [isSending, setIsSending] = useState(false);
@@ -115,8 +115,7 @@ export default function App() {
 
       data.append('foto_lebar', {
         uri: capturedLebarImage,
-        name: fileNameLebar,
-        type: 'image/*'
+        name: fileNameLebar,        type: 'image/*'
       } as any);
 
       data.append('foto_tebal', {
