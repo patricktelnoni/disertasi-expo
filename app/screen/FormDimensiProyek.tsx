@@ -67,6 +67,18 @@ export default function App() {
       //location = await Location.getLastKnownPositionAsync();
     }
 
+    const getCurrentLocation = async ()=>{
+        
+          const {coords} = await Location.getCurrentPositionAsync();  
+          
+          
+          if(coords){
+            let titik = coords.latitude + "," + coords.longitude;
+            return titik;
+
+          }
+    }
+
     const getCameraPermission = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       if (status !== 'granted') {
@@ -87,15 +99,9 @@ export default function App() {
       
       const data = new FormData();
 
-      let titikPanjang  = titikLokasiPanjang.coords.latitude + "," + titikLokasiPanjang.coords.longitude;
-      let titikLebar    = titikLokasiLebar.coords.latitude + "," + titikLokasiLebar.coords.longitude;
-      let titikTebal    = titikLokasiTebal.coords.latitude + "," + titikLokasiTebal.coords.longitude;
-      
-      console.log(titikPanjang);
       const fileNamePanjang = capturedPanjangImage.split('/').pop();
       const fileNameLebar   = capturedLebarImage.split('/').pop();
       const fileNameTebal   = capturedTebalImage.split('/').pop();   
-
 
       data.append('proyek_id', proyek_id);
       data.append('panjang_pekerjaan', panjangPekerjaan);
@@ -103,9 +109,9 @@ export default function App() {
       data.append('tebal_pekerjaan', tebalPekerjaan);
       data.append('id_item_pekerjaan', pekerjaanId);
 
-      data.append('lokasi_foto_panjang',titikPanjang);
-      data.append('lokasi_foto_lebar',titikLebar);
-      data.append('lokasi_foto_tebal',titikTebal);
+      data.append('lokasi_foto_panjang',titikLokasiPanjang);
+      data.append('lokasi_foto_lebar',titikLokasiLebar);
+      data.append('lokasi_foto_tebal',titikLokasiTebal);
       
       data.append('foto_panjang', {
         uri: capturedPanjangImage,
@@ -115,7 +121,8 @@ export default function App() {
 
       data.append('foto_lebar', {
         uri: capturedLebarImage,
-        name: fileNameLebar,        type: 'image/*'
+        name: fileNameLebar,        
+        type: 'image/*'
       } as any);
 
       data.append('foto_tebal', {
@@ -124,10 +131,10 @@ export default function App() {
         type: 'image/*'
       } as any);
 
-      console.log(data);
+      //console.log(data);
       setIsSending(true);
 
-      await axios.post(
+      axios.post(
         'https://palugada.me/api/dimensi_lahan/', 
         //'http://192.168.0.7:8000/api/dimensi_lahan/',
         data,
@@ -142,7 +149,7 @@ export default function App() {
           setIsSending(false);
           alert('Data berhasil disimpan');
           
-          return router.push({pathname:'/screen/ProyekList'})
+          return router.push({pathname:'/screen/ListProyek'});
         } 
       }).
       catch((error) => {
@@ -169,19 +176,37 @@ export default function App() {
             if(tipeGambar == 'panjang'){
               setCapturedPanjangImage(data.uri);
               setPreviewPanjangAvailable(true);
-              setTitikLokasiPanjang(location);
+              
             }
             if(tipeGambar == 'lebar'){
               setCapturedLebarImage(data.uri);
               setPreviewLebarAvailable(true);
-              setTitikLokasiLebar(location);
+          
             }
             if(tipeGambar == 'tebal'){
               setCapturedTebalImage(data.uri);
               setPreviewTebalAvailable(true);
-              setTitikLokasiTebal(location);
+             
             }
           });
+
+          const {coords} = await Location.getCurrentPositionAsync();  
+          
+          
+          if(coords){
+            let titik = coords.latitude + "," + coords.longitude;
+
+            if(tipeGambar == 'panjang'){
+              setTitikLokasiPanjang(titik);
+            }
+            if(tipeGambar == 'lebar'){
+              setTitikLokasiLebar(titik);
+            }
+            if(tipeGambar == 'tebal'){
+              setTitikLokasiTebal(titik);
+            }
+
+          }
           
       }
       
