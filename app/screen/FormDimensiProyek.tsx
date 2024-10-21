@@ -92,7 +92,7 @@ export default function App() {
       getLocationPermission();
       getCameraPermission();
       fetchData();
-    });
+    }, []);
       
 
     const kirimData = async () => {
