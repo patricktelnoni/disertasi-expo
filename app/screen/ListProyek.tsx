@@ -67,7 +67,7 @@ const ListProyek = () => {
                 </Box>
                 <Box px="4" pb="4">
                     <HStack space={2}>
-                        <TouchableWithoutFeedback onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}> 
+                        <TouchableWithoutFeedback disabled={item.persentase_progress >= 100? true:false} onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}> 
                             <View style={styles.detailButton}>
                                 <FontAwesome5 name="ruler" size={16} color="white" style={styles.buttonText}>
                                     <Text style={{fontFamily:"arial"}}>Dimensi Proyek</Text>
