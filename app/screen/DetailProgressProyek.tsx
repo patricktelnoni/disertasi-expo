@@ -7,8 +7,9 @@ import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
 
 const DetailProgressProyek = () => {
-    const [data, setData]       = useState([]);
-    const [total, setTotal]     = useState([]);
+    const [data, setData]           = useState([]);
+    const [total, setTotal]         = useState([]);
+    const [progress, setProgress]   = useState(0);
     const params = useLocalSearchParams();
 
     let proyek_id = params.id;
@@ -26,7 +27,8 @@ const DetailProgressProyek = () => {
             const jsonData = await response.json();
             //console.log(jsonData.data);
             setData(jsonData.data);
-            setTotal(jsonData.total);
+            setTotal(jsonData.total.total_dana);
+            setProgress(jsonData.total.progress)
         } catch (error) {
             console.error(error);
         }
@@ -41,9 +43,9 @@ const DetailProgressProyek = () => {
                 </Box>
                 <Box px="4">
                     <Text>Nama Pekerjaan    : {item.nama_item_pekerjaan}</Text>
-                    <Text>Volume Pekerjaan    : {item.volume_pekerjaan}</Text>
-                    <Text>Biaya Pekerjaan     : {item.biaya}</Text>
-                    <Text>Persentase Progress : {item.persentase_progress} %</Text>
+                    <Text>Volume Pekerjaan    : {item.volume_total}</Text>
+                    <Text>Biaya Pekerjaan     : {item.biaya_total}</Text>
+                    <Text>Persentase Progress : {item.progress} %</Text>
                 </Box>                
                 <Box px="4">
                     <Divider />
@@ -58,8 +60,8 @@ const DetailProgressProyek = () => {
             <Box>
                 <Text>Nama Paket : {nama_paket}</Text>
                 <Text>Nomor Kontrak: {nomor_kontrak}</Text>
-                <Text>Total Progress: {total.total_progress}</Text>
-                <Text>Total Biaya: {total.total_biaya}</Text>
+                <Text>Total Progress: {total}</Text>
+                <Text>Total Biaya: {progress}</Text>
                 <FlatList
                     data={data}
                     renderItem={renderItem}
