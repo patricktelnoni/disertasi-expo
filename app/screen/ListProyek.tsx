@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
-import {HStack, Box, NativeBaseProvider, VStack, Divider, Progress} from 'native-base';
-import { Octicons } from '@expo/vector-icons';
+import {HStack, Box, NativeBaseProvider,  VStack, Divider, Progress, Button, Center} from 'native-base';
 import { router } from 'expo-router';
-
+import TopBar  from './AppBar';
 
 const ListProyek = () => {
     const [data, setData] = useState([]);
@@ -65,22 +63,22 @@ const ListProyek = () => {
                     </TouchableWithoutFeedback>
                   
                 </Box>
-                <Box px="4" pb="4">
+                <Box px="4" pb="4" alignItems="center">
                     <HStack space={2}>
-                        <TouchableWithoutFeedback disabled={item.persentase_progress >= 100? true:false} onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}> 
-                            <View style={styles.detailButton}>
-                                <FontAwesome5 name="ruler" size={16} color="white" style={styles.buttonText}>
-                                    <Text style={{fontFamily:"arial"}}>Dimensi Proyek</Text>
-                                </FontAwesome5>
+                       
+                            <Button colorScheme="cyan" 
+                                onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}
+                                width="30%"
+                                disabled={item.persentase_progress == 100 ? true:false}>Dimensi Proyek</Button>
+                      
+                        
+                            <View>
+                                <Button colorScheme="cyan" 
+                                onPress={() => kesiapanLahan(item.id)}
+                                width="70%"
+                                disabled={item.persentase_progress == 100 ? true:false}>Kesiapan Lahan</Button>
                             </View>
-                        </TouchableWithoutFeedback>
-                        <TouchableWithoutFeedback onPress={() => kesiapanLahan(item.id)}>
-                            <View style={styles.detailButton}>
-                                <FontAwesome5 name="check" size={16} color="white" style={styles.buttonText}>
-                                    <Text style={{fontFamily:"arial"}}>Kesiapan Lahan</Text>
-                                </FontAwesome5>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        
                     </HStack>
                 </Box>
                 <Box px="4">
@@ -92,7 +90,19 @@ const ListProyek = () => {
     );
 
     return (
+        
         <NativeBaseProvider>
+            
+            <Box safeAreaTop bg="cyan.700">
+                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
+                    <HStack alignItems="center">
+                        <Text color="white" fontSize="32" fontWeight="bold">
+                            List Proyek
+                        </Text>
+                    </HStack>
+                </HStack>
+            </Box>
+      
             <Box>
                 <FlatList
                     data={data}
@@ -105,20 +115,3 @@ const ListProyek = () => {
 };
 
 export default ListProyek;
-
-const styles = {
-    detailButton:{
-        backgroundColor:'#728FCE',
-        borderRadius:10,
-        borderWidth: 1,
-        borderColor: '#fff',
-        height: 50,
-        width:175,
-    },
-    buttonText:{
-        color: 'white',
-        textAlign: 'center',
-        padding: 10,
-        fontSize: 16,
-    }
-}

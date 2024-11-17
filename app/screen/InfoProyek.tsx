@@ -10,7 +10,7 @@ import {
 import {Button, NativeBaseProvider, Select, CheckIcon} from 'native-base';
 import {router} from 'expo-router';
 import { CustomForm } from './CustomForm';
-
+import { Box, HStack } from 'native-base';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -119,6 +119,15 @@ const FormProyekScreen = () => {
   
   return (
     <NativeBaseProvider>
+      <Box safeAreaTop bg="cyan.700">
+                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
+                    <HStack alignItems="center">
+                        <Text color="white" fontSize="32" fontWeight="bold">
+                            Tambah Proyek
+                        </Text>
+                    </HStack>
+                </HStack>
+            </Box>
       <View
         style={[
           styles.container,
@@ -127,7 +136,8 @@ const FormProyekScreen = () => {
         
 
         <View style={{flex: 0}}>
-          <Text>Form tambah proyek</Text>
+          <Text style={{fontWeight: "bold", fontSize:24}}>Form tambah proyek</Text>
+        
         </View>
         <View >
           <ScrollView>

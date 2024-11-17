@@ -1,11 +1,11 @@
 import { CameraView, useCameraPermissions, Camera } from 'expo-camera';
 import { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native';
-import { NativeBaseProvider, Button, FormControl, Select, CheckIcon } from 'native-base';
+import { NativeBaseProvider, Button, FormControl, Select, CheckIcon, Box, Heading } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { CustomForm } from './CustomForm';
-
+import { HStack } from 'native-base';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
@@ -94,7 +94,7 @@ export default function App() {
       fetchData();
     }, []);
       
-
+1
     const kirimData = async () => {
       
       const data = new FormData();
@@ -219,7 +219,17 @@ export default function App() {
 
   return (
     <NativeBaseProvider>
+       <Box safeAreaTop bg="cyan.700">
+                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
+                    <HStack alignItems="center">
+                        <Text color="white" fontSize="32" fontWeight="bold">
+                            Form Dimensi Proyek
+                        </Text>
+                    </HStack>
+                </HStack>
+            </Box>
       { 
+      
         cameraOn ?
           <View style={{flex: 1}}>
                 <CameraView style={styles.camera} photo={true} facing={facing} ref={cameraRef}>
@@ -234,99 +244,101 @@ export default function App() {
                 </CameraView>
           </View>: 
           <View
-        style={[
-          styles.container,
+            style={[
+              styles.container,
+              
+            ]}>
           
-        ]}>
-          
-    
-      <ScrollView>
-        <Select selectedValue={pekerjaanId} 
-                minWidth="200" 
-                maxW="300px"
-                accessibilityLabel="Pilih Item Pekerjaan" 
-                placeholder="Pilih Item Pekerjaan" 
-                _selectedItem={{
-                    bg: "teal.600",
-                    endIcon: <CheckIcon size="3" />
-                }} mt={1} 
-                onValueChange={itemValue => setPekerjaanId(itemValue)}>
-                    {
-                      itemPekerjaanList.map((item) => {
-                        return <Select.Item label={item.nama_item_pekerjaan} value={item.id} key={item.id} />
-                      })
-                    }
-        </Select>
+          <Box maxW="80%" alignItems="left" margin="5%">
+          <Heading size="xl" ml="-1" marginLeft={3}>Form Dimensi Proyek</Heading>
+          <ScrollView>
+            <Select selectedValue={pekerjaanId} 
+                    minWidth="200" 
+                    maxW="300px"
+                    marginLeft={3}
+                    accessibilityLabel="Pilih Item Pekerjaan" 
+                    placeholder="Pilih Item Pekerjaan" 
+                    _selectedItem={{
+                        bg: "teal.600",
+                        endIcon: <CheckIcon size="3" />
+                    }} mt={1} 
+                    onValueChange={itemValue => setPekerjaanId(itemValue)}>
+                        {
+                          itemPekerjaanList.map((item) => {
+                            return <Select.Item label={item.nama_item_pekerjaan} value={item.id} key={item.id} />
+                          })
+                        }
+            </Select>
 
-      <CustomForm 
-        label='Panjang Pekerjaan'
-        errorMessage='Panjang Pekerjaan harus diisi'
-        value={panjangPekerjaan}
-        onChangeText={setPanjangPekerjaan} />
+          <CustomForm 
+            label='Panjang Pekerjaan'
+            errorMessage='Panjang Pekerjaan harus diisi'
+            value={panjangPekerjaan}
+            onChangeText={setPanjangPekerjaan} />
+          
+          <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Panjang Pekerjaan</FormControl.Label>
+
+            {
+              previewPanjangAvailable ? 
+              <View style={{marginLeft:"3%"}}>
+                <Text>Preview</Text>
+                    <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />       
+                </View>
+              : <>{
+                <View style={styles.cameraIcon}>
+                  <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('panjang')} /> 
+                </View>
+                }</>
+            }
+
+          <CustomForm 
+            label='Lebar Pekerjaan'
+            errorMessage='Lebar Pekerjaan harus diisi'
+            value={lebarPekerjaan}
+            onChangeText={setLebarPekerjaan} />   
+
+          <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Lebar Pekerjaan</FormControl.Label>
+
+            {
+              previewLebarAvailable ? 
+              <View style={{marginLeft:"3%"}}>
+                <Text>Preview</Text>
+                    <Image source={{uri: capturedLebarImage}} style={{width: 200, height: 200}} />
+                </View>
+              : <>{
       
-      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Panjang Pekerjaan</FormControl.Label>
+                <View style={styles.cameraIcon}>
+                  <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('lebar')} /> 
+                </View>
+              
+                }</>
+            }
 
-        {
-          previewPanjangAvailable ? 
-          <View style={{marginLeft:"3%"}}>
-            <Text>Preview</Text>
-                <Image source={{uri: capturedPanjangImage}} style={{width: 200, height: 200}} />       
-            </View>
-          : <>{
-            <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('panjang')} /> 
-            </View>
-            }</>
-        }
+            <CustomForm 
+              label='Tebal Pekerjaan'
+              errorMessage='Tebal Pekerjaan harus diisi'
+              value={tebalPekerjaan}
+              onChangeText={setTebalPekerjaan} />
 
-      <CustomForm 
-        label='Lebar Pekerjaan'
-        errorMessage='Lebar Pekerjaan harus diisi'
-        value={lebarPekerjaan}
-        onChangeText={setLebarPekerjaan} />   
+            <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Tebal Pekerjaan</FormControl.Label>
 
-      <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Lebar Pekerjaan</FormControl.Label>
-
-        {
-          previewLebarAvailable ? 
-          <View style={{marginLeft:"3%"}}>
-            <Text>Preview</Text>
-                <Image source={{uri: capturedLebarImage}} style={{width: 200, height: 200}} />
-            </View>
-          : <>{
-  
-            <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('lebar')} /> 
-            </View>
-           
-            }</>
-        }
-
-        <CustomForm 
-          label='Tebal Pekerjaan'
-          errorMessage='Tebal Pekerjaan harus diisi'
-          value={tebalPekerjaan}
-          onChangeText={setTebalPekerjaan} />
-
-        <FormControl.Label _text={{bold: true}} style={{marginLeft:"3%"}}>Foto Tebal Pekerjaan</FormControl.Label>
-
-        {
-          previewTebalAvailable ? 
-          <View style={{marginLeft:"3%"}}>
-            <Text>Preview</Text>
-                <Image source={{uri: capturedTebalImage}} style={{width: 200, height: 200}} />            
-            </View>
-          : <>{
-            <View style={styles.cameraIcon}>
-              <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('tebal')} /> 
-            </View>
-            }</>
-        }
-        <Button colorScheme="cyan" onPress={kirimData} disabled={isSending} width="90%">Submit</Button>
-      </ScrollView>
-   
+            {
+              previewTebalAvailable ? 
+              <View style={{marginLeft:"3%"}}>
+                <Text>Preview</Text>
+                    <Image source={{uri: capturedTebalImage}} style={{width: 200, height: 200}} />            
+                </View>
+              : <>{
+                <View style={styles.cameraIcon}>
+                  <AntDesign name="camera" size={24} color="black" onPress={() => startCamera('tebal')} /> 
+                </View>
+                }</>
+            }
+            <Button colorScheme="cyan" onPress={kirimData} disabled={isSending} width="90%">Submit</Button>
+          </ScrollView>
+          </Box>
     </View>
-      
+    
       }
       
       
@@ -340,7 +352,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   container: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
   },
   camera: {

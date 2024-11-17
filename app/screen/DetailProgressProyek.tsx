@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import {HStack, Box, NativeBaseProvider, VStack, Divider, Progress} from 'native-base';
+import {HStack, Box, NativeBaseProvider, VStack, Divider, Heading} from 'native-base';
 import { Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useLocalSearchParams } from 'expo-router';
@@ -42,7 +42,7 @@ const DetailProgressProyek = () => {
                     <Text style={{fontWeight: "bold", fontSize:24}}>{item.nama_paket}</Text>
                 </Box>
                 <Box px="4">
-                    <Text>Nama Pekerjaan    : {item.nama_item_pekerjaan}</Text>
+                    <Text>Nama Pekerjaan      : {item.nama_item_pekerjaan}</Text>
                     <Text>Volume Pekerjaan    : {item.volume_total}</Text>
                     <Text>Biaya Pekerjaan     : {item.biaya_total}</Text>
                     <Text>Persentase Progress : {item.progress} %</Text>
@@ -57,11 +57,11 @@ const DetailProgressProyek = () => {
 
     return (
         <NativeBaseProvider>
-            <Box>
-                <Text>Nama Paket : {nama_paket}</Text>
+            <Box maxW="80%" alignItems="left" margin="5%">
+                <Heading size="xl" ml="-1">Nama Paket : {nama_paket}</Heading>
                 <Text>Nomor Kontrak: {nomor_kontrak}</Text>
-                <Text>Total Progress: {total}</Text>
-                <Text>Total Biaya: {progress}</Text>
+                <Text>Total Progress: {progress}</Text>
+                <Text>Total Biaya: {total}</Text>
                 <FlatList
                     data={data}
                     renderItem={renderItem}
