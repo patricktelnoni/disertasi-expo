@@ -3,12 +3,9 @@ import {
   Text, 
   StyleSheet, 
   View,  
-  TextInput, 
-  Modal, 
-  Pressable, 
   ScrollView } from 'react-native';
 import {Button, NativeBaseProvider, Select, CheckIcon} from 'native-base';
-import {router} from 'expo-router';
+import {router, useLocalSearchParams, Stack} from 'expo-router';
 import { CustomForm } from './CustomForm';
 import { Box, HStack } from 'native-base';
 const styles = StyleSheet.create({
@@ -64,6 +61,7 @@ const styles = StyleSheet.create({
 });
 
 const FormProyekScreen = () => {
+  const params = useLocalSearchParams();
   const [namaPaket, setNamaPaket] = useState('');
   const [namaPpk, setNamaPpk] = useState('');
   const [namaSatker, setNamaSatker] = useState('');
@@ -119,22 +117,12 @@ const FormProyekScreen = () => {
   
   return (
     <NativeBaseProvider>
-      <Box safeAreaTop bg="cyan.700">
-                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
-                    <HStack alignItems="center">
-                        <Text color="white" fontSize="32" fontWeight="bold">
-                            Tambah Proyek
-                        </Text>
-                    </HStack>
-                </HStack>
-            </Box>
+      <Stack.Screen options={{title: params.title}}/>
       <View
         style={[
-          styles.container,
-          
+          styles.container, 
         ]}>
         
-
         <View style={{flex: 0}}>
           <Text style={{fontWeight: "bold", fontSize:24}}>Form tambah proyek</Text>
         

@@ -9,7 +9,7 @@ import { HStack } from 'native-base';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { AntDesign } from '@expo/vector-icons';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import axios from 'axios';
 
 export default function App() {
@@ -219,15 +219,7 @@ export default function App() {
 
   return (
     <NativeBaseProvider>
-       <Box safeAreaTop bg="cyan.700">
-                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
-                    <HStack alignItems="center">
-                        <Text color="white" fontSize="32" fontWeight="bold">
-                            Form Dimensi Proyek
-                        </Text>
-                    </HStack>
-                </HStack>
-            </Box>
+       <Stack.Screen options={{title: 'Form Dimensi Proyek'}}/>
       { 
       
         cameraOn ?

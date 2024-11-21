@@ -4,7 +4,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import {HStack, Box, NativeBaseProvider, VStack, Divider, Heading} from 'native-base';
 import { Octicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 
 const DetailProgressProyek = () => {
     const [data, setData]           = useState([]);
@@ -57,6 +57,7 @@ const DetailProgressProyek = () => {
 
     return (
         <NativeBaseProvider>
+            <Stack.Screen options={{title: 'Detail Progress Pengerjaan'}}/>
             <Box maxW="80%" alignItems="left" margin="5%">
                 <Heading size="xl" ml="-1">Nama Paket : {nama_paket}</Heading>
                 <Text>Nomor Kontrak: {nomor_kontrak}</Text>

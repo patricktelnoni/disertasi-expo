@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback } from 'react-native';
 import {HStack, Box, NativeBaseProvider,  VStack, Divider, Progress, Button, Center} from 'native-base';
-import { router } from 'expo-router';
-import TopBar  from './AppBar';
+import { router, useLocalSearchParams, Stack } from 'expo-router';
+import {Appbar} from 'react-native-paper';
 
 const ListProyek = () => {
     const [data, setData] = useState([]);
-
+    const params = useLocalSearchParams();
     useEffect(() => {
         fetchData();
     }, []);
@@ -92,16 +92,7 @@ const ListProyek = () => {
     return (
         
         <NativeBaseProvider>
-            
-            <Box safeAreaTop bg="cyan.700">
-                <HStack  px="1" py="3" justifyContent="space-between" alignItems="center" w="100%" >
-                    <HStack alignItems="center">
-                        <Text color="white" fontSize="32" fontWeight="bold">
-                            List Proyek
-                        </Text>
-                    </HStack>
-                </HStack>
-            </Box>
+            <Stack.Screen options={{title: params.title}}/>
       
             <Box>
                 <FlatList

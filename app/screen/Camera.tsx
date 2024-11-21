@@ -5,7 +5,6 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, Image, TextInput } fr
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 
-import * as MediaLibrary from'expo-media-library';
 import * as Location from 'expo-location';
 import { router } from 'expo-router';
 

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Text, StyleSheet, View, Button, TextInput, Alert} from 'react-native';
-import Preview from '../../app-example/screen/Preview';
+import Preview from '../screen/Preview';
 import { router } from 'expo-router';
 //import CustomText from '../../component/CustomText.tsx';
 

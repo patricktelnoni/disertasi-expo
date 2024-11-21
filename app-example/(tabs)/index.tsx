@@ -53,7 +53,7 @@ export default function HomeScreen() {
               </Link>
               
               
-              <Link href='/screen/ListProyek'> 
+              <Link href='/screen/ListProyek' > 
                 <Center size={32} bg="fuchsia.400" rounded="md" _text={{
                   color: "white"
                 }} shadow={3}>
