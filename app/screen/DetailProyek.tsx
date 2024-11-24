@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
-import { useLocalSearchParams, useGlobalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useGlobalSearchParams, Stack } from 'expo-router';
 import { VStack, HStack, Box, Divider, FormControl, NativeBaseProvider } from 'native-base';
 import { FontAwesome6 } from '@expo/vector-icons';
 
@@ -45,6 +45,7 @@ const DetailProyek: React.FC = () => {
 
     return (
         <NativeBaseProvider>
+             <Stack.Screen options={{title: "Detail Pekerjaan"}} />
             <View>
                 
                 <Text>Detail Proyek</Text>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useMemo} from 'react';
 import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, Stack } from 'expo-router';
 import {
     StyleSheet,
     Modal, 
@@ -168,6 +168,7 @@ const ItemPekerjaan = () => {
   
     return (
         <NativeBaseProvider>
+          <Stack.Screen options={{title: "Item Pekerjaan"}} />
           <ActivityIndicator animating={isLoading} />
             <View style={{flex: 1}}>
                 <Modal

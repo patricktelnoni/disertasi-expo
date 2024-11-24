@@ -3,8 +3,12 @@ import ListProyek from "./screen/ListProyek";
 
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" />
+    <Stack screenOptions={{headerStyle:{
+      backgroundColor: '#0e7490',
+  }, headerTintColor: '#fff', headerTitleStyle: {
+      fontWeight: 'bold',
+  }}}>
+      <Stack.Screen name="Halaman Utama" />
       
     </Stack>
   );
