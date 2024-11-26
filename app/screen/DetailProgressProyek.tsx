@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableWithoutFeedback, Image } from 'react-native';
-import {HStack, Box, NativeBaseProvider, VStack, Divider, Heading, Flex, Spacer, Center} from 'native-base';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-
-
+import { formatCurrency } from "react-native-format-currency";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const DetailProgressProyek = () => {
     const [data, setData]           = useState([]);
@@ -37,93 +36,75 @@ const DetailProgressProyek = () => {
     };
 
     const renderItem = ({ item }) => (
-        <Box 
-            borderRadius="10" 
-            borderWidth="3" 
-            borderColor="muted.200" 
-            fontSize={25}
-            margin={2}>
-            <VStack space="4" >
-                <Box px="4" pt="4">
-                    <Text style={{fontWeight: "bold", fontSize:24, color:"#0e7490"}}>{item.nama_item_pekerjaan}</Text>
-                </Box>
-                <Flex flexDirection="row">
-                       <Center marginRight={6}>
-                            <AnimatedCircularProgress
-                                size={75}
-                                width={5}
-                                fill={item.progress}
-                                tintColor="#fbbf24"
-                                backgroundColor="#3d5875" > 
-                                {
-                                    (fill) => (
-                                    <Text>
-                                        { item.progress == null ? 0: item.progress  }%
-                                    </Text>
-                                    )
-                                }
-                            </AnimatedCircularProgress>
-                        </Center>
-                    <Flex flexDirection="column" marginRight={11}>
-                        <Flex flexDirection="row">
-                            <Text style={styles.baseText}>Volume Pekerjaan     </Text>
-                            <Spacer />
-                            <Text style={styles.baseText}> {item.volume_total}</Text>
-                        </Flex>
-                        <Flex flexDirection="row">
-                            <Text style={styles.baseText}>Biaya Pekerjaan     </Text>
-                            <Spacer />
-                            <Text style={styles.baseText}> {item.biaya_total}</Text>
-                        </Flex>
-                    </Flex>
-                </Flex>                
-                <Box px="4">
-                    <Divider />
-                </Box>
-            </VStack>
-        </Box>
-    
+            
+        <View className='flex-col bg-slate-200 rounded-2xl' style={{marginTop:20}}> 
+            <Text className='font-bold text-2xl shadow-sm' style={{color:"#0e7490"}}>{item.nama_item_pekerjaan}</Text>
+            <View className='flex-row'>
+                <View className='flex-col px-6'>
+                    <AnimatedCircularProgress
+                        size={120}
+                        width={15}
+                        fill={item.progress}
+                        tintColor="#fbbf24"
+                        backgroundColor="#3d5875" > 
+                        {
+                            (fill) => (
+                            <Text>
+                                { item.progress == null ? 0: item.progress  }%
+                            </Text>
+                            )
+                        }
+                    </AnimatedCircularProgress>
+                </View>
+                <View className='flex-col justify-center item-center px-6'>
+                    <View className='flex-row justify-between item-center'>
+                        <FontAwesome6 name="glass-water" size={30} color="black" />
+                        <Text style={styles.baseText}> {item.volume_total}</Text>         
+                    </View>
+                    <View className='flex-row justify-between item-center'>
+                        <FontAwesome6 name="money-bill-wave" size={30} color="black" />
+                        <Text style={styles.baseText}> {formatCurrency({ amount: item.biaya_total, code: "IDR" })[0]}</Text>        
+                    </View>
+                    <View className='flex-row justify-between item-center'>
+                        <FontAwesome5 name="calendar-alt" size={30} color="black" />
+                        <Text style={styles.baseText}> {item.tanggal_dokumentasi}</Text>        
+                    </View>
+                </View>     
+            </View> 
+        </View>
     );
 
     return (
-        <NativeBaseProvider>
+        <View>
             <Stack.Screen options={{title: 'Detail Progress Pengerjaan'}}/>
-            <Box maxW="80%" alignItems="left" margin="5%">
-                <Heading size="xl" ml="-1" color="cyan.700">Nama Paket : {nama_paket}</Heading>
-                <Flex flexDirection="row">
-             
-                        <FontAwesome5 name="file-contract" size={28} color="#0891b2" style={{marginRight:10}} />
-                        <Text style={styles.baseText}>Nomor Kontrak</Text>
-                
-                    <Spacer />
+            <View className='flex-col px-2 p-2'>
+                <Text className='font-bold text-3xl shadow-sm'>Nama Paket : {nama_paket}</Text>
+                <View className='flex-row content-around'>
+                    <FontAwesome6 className='basis-12' name="file-contract" size={30} color="black" />
+                    <Text className='basis-60' style={styles.baseText}>Nomor Kontrak</Text>
                     <Text style={styles.baseText}> {nomor_kontrak}</Text>
-                </Flex>
-                <Flex flexDirection="row">
-                    <HStack>
-                        <FontAwesome6 name="bars-progress" size={27} color="#0891b2" style={{marginRight:10}}/>
-                        <Text style={styles.baseText}>Total Progress: </Text>
-                    </HStack>
-                    
-                    <Spacer />
+                </View>
+                <View className='flex-row content-around'>
+                    <FontAwesome6 className='basis-12' name="bars-progress" size={24} color="black" />
+                    <Text className='basis-60' style={styles.baseText}>Total Progress: </Text>
                     <Text style={styles.baseText}>{progress}</Text>
-                </Flex>
-           
-                <Flex flexDirection="row">
-                    <HStack>
-                        <FontAwesome6 name="money-bill" size={27} color="#0891b2" style={{marginRight:10}}/>
-                        <Text style={styles.baseText}>Total Biaya: </Text>
-                    </HStack>
-                    <Spacer />
-                    <Text style={styles.baseText}>{total}</Text>
-                </Flex>
-                
+                </View>
+                <View className='flex-row content-around'>
+                    
+                    <FontAwesome6 className='basis-12' name="money-bill-wave" size={30} color="black" />
+                    <Text className='basis-60' style={styles.baseText}>Total Biaya: </Text>
+                    <Text style={styles.baseText}>{formatCurrency({ amount: total, code: "IDR" })[0]}</Text>
+                </View>
                 <FlatList
                     data={data}
+                    numColumns={1}
                     renderItem={renderItem}
+                    
                     keyExtractor={(item) => item.id.toString()}
                 />
-            </Box>
-        </NativeBaseProvider>
+            </View>
+        </View>
+  
     );
 };
 
@@ -139,7 +120,7 @@ const styles = {
     },
     baseText:{
 
-        fontSize: 16,
+        fontSize: 18,
         color: 'black',
         marginRight: 5,
     },

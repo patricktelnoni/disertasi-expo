@@ -27,7 +27,9 @@
       },
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.anonymous.disertasikitto",
       "usesCleartextTraffic": true
@@ -72,6 +74,10 @@
       "eas": {
         "projectId": "ccbc47ae-ec9e-431b-b69c-3abacb49f038"
       }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/ccbc47ae-ec9e-431b-b69c-3abacb49f038"
     }
   }
 }

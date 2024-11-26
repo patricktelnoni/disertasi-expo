@@ -1,5 +1,6 @@
 import {Link,  Stack } from "expo-router";
 import ListProyek from "./screen/ListProyek";
+import "../global.css";
 
 export default function RootLayout() {
   return (
