@@ -5,7 +5,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { formatCurrency } from "react-native-format-currency";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
 
 const DetailProgressProyek = () => {
     const [data, setData]           = useState([]);
@@ -66,7 +66,7 @@ const DetailProgressProyek = () => {
                         <Text style={styles.baseText}> {formatCurrency({ amount: item.biaya_total, code: "IDR" })[0]}</Text>        
                     </View>
                     <View className='flex-row justify-between item-center'>
-                        <FontAwesome5 name="calendar-alt" size={30} color="black" />
+                        <FontAwesome6 name="calendar-alt" size={30} color="black" />
                         <Text style={styles.baseText}> {item.tanggal_dokumentasi}</Text>        
                     </View>
                 </View>     
@@ -78,7 +78,7 @@ const DetailProgressProyek = () => {
         <View>
             <Stack.Screen options={{title: 'Detail Progress Pengerjaan'}}/>
             <View className='flex-col px-2 p-2'>
-                <Text className='font-bold text-3xl shadow-sm'>Nama Paket : {nama_paket}</Text>
+                <Text className='font-bold text-3xl shadow-sm'> {nama_paket}</Text>
                 <View className='flex-row content-around'>
                     <FontAwesome6 className='basis-12' name="file-contract" size={30} color="black" />
                     <Text className='basis-60' style={styles.baseText}>Nomor Kontrak</Text>
@@ -90,7 +90,6 @@ const DetailProgressProyek = () => {
                     <Text style={styles.baseText}>{progress}</Text>
                 </View>
                 <View className='flex-row content-around'>
-                    
                     <FontAwesome6 className='basis-12' name="money-bill-wave" size={30} color="black" />
                     <Text className='basis-60' style={styles.baseText}>Total Biaya: </Text>
                     <Text style={styles.baseText}>{formatCurrency({ amount: total, code: "IDR" })[0]}</Text>
@@ -104,7 +103,6 @@ const DetailProgressProyek = () => {
                 />
             </View>
         </View>
-  
     );
 };
 
