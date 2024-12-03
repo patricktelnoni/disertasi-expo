@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Pressable, Image, Button } from 'react-native';
+import { View, Text, FlatList, Pressable, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { router, useLocalSearchParams, Stack } from 'expo-router';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+
+
 
 const ListProyek = () => {
     const [data, setData] = useState([]);
@@ -45,61 +48,66 @@ const ListProyek = () => {
             <View className='flex-col bg-slate-200 rounded-2xl' style={{marginTop:20}}>
                 <Text style={{fontWeight: "bold", fontSize:24, color:"#0e7490"}}>{item.nama_paket}</Text>
                 <View className="flex-col justify-center items-center"> 
-                    <AnimatedCircularProgress
-                        size={110}
-                        width={15}
-                        fill={item.persentase_progress}
-                        tintColor="#f87171"
-                        backgroundColor="#3d5875" > 
-                        {
-                            (fill) => (
-                                <Text>
-                                    { item.persentase_progress == null ? 0: item.persentase_progress }%
-                                </Text>
-                            )
-                        }
-                        </AnimatedCircularProgress>
+                            <AnimatedCircularProgress
+                            size={110}
+                            width={15}
+                            fill={item.persentase_progress}
+                            tintColor="#f87171"
+                            backgroundColor="#3d5875" > 
+                            {
+                                (fill) => (
+                                    <Text>
+                                        { item.persentase_progress == null ? 0: item.persentase_progress }%
+                                    </Text>
+                                )
+                            }
+                            </AnimatedCircularProgress>
+                        </View>
+                <View className='flex-row'>
+                    <View className='px-4 flex-col w-64'>
+                        <View className='flex-row'>
+                            <Image 
+                                source={require('@/assets/icons/sticky-notes.png')} 
+                                style={styles.icons}/>
+                            <Text style={styles.baseText}>{item.nomor_kontrak}</Text>
+                        </View>
+                        <View className='flex-row'>
+                            <Image 
+                                source={require('@/assets/icons/location.jpg')} 
+                                style={styles.icons}/>
+                            <Text style={styles.baseText}>{item.lokasi_pekerjaan}</Text>
+                        </View>
+                        <View className='flex-row'>
+                            <Image 
+                                source={require('@/assets/icons/pejabat.png')} 
+                                style={styles.icons}/>
+                            <Text style={styles.baseText}>{item.nama_ppk}</Text>
+                        </View>
                     </View>
-                    <View className='flex-row'>
-                        <Image 
-                            source={require('@/assets/icons/sticky-notes.png')} 
-                            style={styles.icons}/>
-                        <Text style={styles.baseText}>{item.nomor_kontrak}</Text>
-                    </View>
-                    <View className='flex-row'>
-                        <Image 
-                            source={require('@/assets/icons/location.jpg')} 
-                            style={styles.icons}/>
-                        <Text style={styles.baseText}>{item.lokasi_pekerjaan}</Text>
-                    </View>
-                    <View className='flex-row'>
-                        <Image 
-                            source={require('@/assets/icons/pejabat.png')} 
-                            style={styles.icons}/>
-                        <Text style={styles.baseText}>{item.nama_ppk}</Text>
-                    </View>
-                    <View className=' flex-row justify-between p-4'>
-                        <Button
-                            colorScheme="cyan" 
-                            onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}
-                            width="30%"
-                            disabled={item.persentase_progress == 100 ? true:false}
-                            title="Dimensi Proyek"/>
-                    
-                        <Button colorScheme="cyan" 
-                            onPress={() => kesiapanLahan(item.id)}
-                            width="70%"
-                            disabled={item.persentase_progress == 100 ? true:false}
-                            title="Kesiapan Lahan" />
-                          
+                    <View className='flex-col p-4 justify-between'>
+                            <TouchableOpacity 
+                                className="flex-row container min-w-36 h-16  bg-cyan-700 items-center mb-2"
+                                onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}
+                                disabled={item.persentase_progress == 100 ? true:false}>
+                                <FontAwesome5 className="m-3" name="ruler-combined" size={24} color="white" />
+                                <Text className="m-2 text-white" >Dimensi Proyek</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                className="flex-row  container min-w-36 h-16  bg-cyan-700 items-center"
+                                onPress={() => kesiapanLahan(item.id)}
+                                disabled={item.persentase_progress == 100 ? true:false}>
+
+                                <FontAwesome5 className="m-3"  name="check" size={24} color="white" />
+                                <Text className="m-2 text-white" >Kesiapan Lahan</Text>
+                            
+                            </TouchableOpacity>
                     </View>  
+                </View>
             </View>
         </Pressable>
-
     );
 
     return (
-        
         <View>
             <Stack.Screen options={{title: params.title}} />
             <View className='justify-center'>
