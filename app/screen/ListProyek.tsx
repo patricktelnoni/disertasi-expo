@@ -25,30 +25,25 @@ const ListProyek = () => {
         }
     };
 
-    const dimensiProyek = (id) => {
-        router.push({pathname:'/screen/FormDimensiProyek', params: {id: id}});
-    }
 
-    const kesiapanLahan = (id) => {
-        router.push({pathname:'/screen/FormKesiapanLahan', params: {id: id}});
-    }
 
-    const detailProgress = (id, nama_paket, nomor_kontrak) => {
+    const detailProgress = (id, nama_paket, nomor_kontrak, progress) => {
         router.push({pathname:'/screen/DetailProgressProyek', 
             params: {
                 id: id, 
                 nama_paket: nama_paket, 
-                nomor_kontrak: nomor_kontrak
+                nomor_kontrak: nomor_kontrak,
+                progress: progress
             }
         });
     }
 
     const renderItem = ({ item }) => (
-        <Pressable onPress={() => detailProgress(item.id, item.nama_paket, item.nomor_kontrak)}>
-            <View className='flex-col bg-slate-200 rounded-2xl' style={{marginTop:20}}>
-                <Text style={{fontWeight: "bold", fontSize:24, color:"#0e7490"}}>{item.nama_paket}</Text>
-                <View className="flex-col justify-center items-center"> 
-                            <AnimatedCircularProgress
+        <Pressable className='flex-col bg-slate-200 rounded-2xl w-56 m-2'
+                   onPress={() => detailProgress(item.id, item.nama_paket, item.nomor_kontrak, item.persentase_progress)}>
+            <View  style={{marginTop:20}}>
+                <View className="flex-col justify-center items-center mt-2">
+                    <AnimatedCircularProgress
                             size={110}
                             width={15}
                             fill={item.persentase_progress}
@@ -61,10 +56,12 @@ const ListProyek = () => {
                                     </Text>
                                 )
                             }
-                            </AnimatedCircularProgress>
-                        </View>
+                    </AnimatedCircularProgress>
+                    <Text className='w-30' style={{fontWeight: "bold", fontSize:18, color:"#0e7490"}}>{item.nama_paket}</Text>
+                </View>
+
                 <View className='flex-row'>
-                    <View className='px-4 flex-col w-64'>
+                    <View className='px-4 flex-col'>
                         <View className='flex-row'>
                             <Image 
                                 source={require('@/assets/icons/sticky-notes.png')} 
@@ -84,24 +81,7 @@ const ListProyek = () => {
                             <Text style={styles.baseText}>{item.nama_ppk}</Text>
                         </View>
                     </View>
-                    <View className='flex-col p-4 justify-between'>
-                            <TouchableOpacity 
-                                className="flex-row container min-w-36 h-16  bg-cyan-700 items-center mb-2"
-                                onPress={() => dimensiProyek(item.id, item.nama_paket, item.nomor_kontrak)}
-                                disabled={item.persentase_progress == 100 ? true:false}>
-                                <FontAwesome5 className="m-3" name="ruler-combined" size={24} color="white" />
-                                <Text className="m-2 text-white" >Dimensi Proyek</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                className="flex-row  container min-w-36 h-16  bg-cyan-700 items-center"
-                                onPress={() => kesiapanLahan(item.id)}
-                                disabled={item.persentase_progress == 100 ? true:false}>
 
-                                <FontAwesome5 className="m-3"  name="check" size={24} color="white" />
-                                <Text className="m-2 text-white" >Kesiapan Lahan</Text>
-                            
-                            </TouchableOpacity>
-                    </View>  
                 </View>
             </View>
         </Pressable>
@@ -113,9 +93,9 @@ const ListProyek = () => {
             <View className='justify-center'>
                 <FlatList
                     data={data}
-                    numColumns={1}
+                    numColumns={2}
                     renderItem={renderItem}
-                    
+                    columnWrapperStyle={{justifyContent:'space-around'}}
                     keyExtractor={(item) => item.id.toString()}
                 />
             </View>
@@ -127,16 +107,16 @@ export default ListProyek;
 
 const styles = {
     icons:{
-        width: 30,
-        height: 30,
+        width: 25,
+        height: 25,
         padding:5,
         margin:4,
         marginRight:10,
     },
     baseText:{
-        fontSize: 18,
+        fontSize: 13,
         fontWeight: 'normal',
-        color: 'cyan.500',
+        color: '#3d5a80',
     },
 
     detailButton:{
@@ -151,6 +131,6 @@ const styles = {
         color: 'white',
         textAlign: 'center',
         padding: 10,
-        fontSize: 16,
+        fontSize: 13,
     }
 }
